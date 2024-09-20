@@ -9,6 +9,8 @@
   let time: number = 0;
   let isClicked: boolean = false;
   let email: string;
+  let currentTime: string = "";
+  let status: string = "";
 
   function initializeGrid(): void {
     for (let i = 0; i < rows; i++) {
@@ -72,10 +74,27 @@
     });
   }
 
+  function updateTime(): void {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    currentTime = `${hours.toString().padStart(2, "0")}<span class="blink">:</span>${minutes.toString().padStart(2, "0")}<span class="blink">:</span>${seconds.toString().padStart(2, "0")}`;
+
+    // Status basierend auf der Uhrzeit
+    if (hours >= 14 || hours < 2) {
+      status = "online";
+    } else {
+      status = "offline";
+    }
+  }
+
   onMount((): void => {
     initializeGrid();
     animationFrame = requestAnimationFrame(animate);
     email = decodeEmail("eboregohegmvx@tznvy.pbz");
+    updateTime();
+    setInterval(updateTime, 1000); // Aktualisiere die Uhrzeit jede Sekunde
   });
 
   function stopAnimation(): void {
@@ -87,7 +106,10 @@
   <p>
     Robert Burtzik is a designer and developer based in Hamburg. He is
     interested in the intersection of design, technology, and culture. He is
-    currently working as interface designer and developer.
+    currently <span class="status">{status}</span>.
+  </p>
+  <p class="time">
+    Current Time: {@html currentTime}
   </p>
   <div
     class="ascii-grid"
@@ -126,7 +148,7 @@
         This place is built with svelte, vite and typescript and is running on
         vercel.
       </p>
-      <p>This pod was last updated on 21/09/2024</p>
+      <p>Void Filamente was last updated on 21/09/2024</p>
       <a href="https://www.are.na/robert-burtzik/channels">Are.na</a>
       <a href="https://www.instagram.com/rburtzik">Instagram</a>
       <a href="mailto:{email}">{email}</a>
@@ -197,5 +219,23 @@
     height: 20px;
     text-align: center;
     transition: transform 0.3s;
+  }
+
+  .blink {
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    from,
+    to {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .status {
+    font-weight: bold;
   }
 </style>
