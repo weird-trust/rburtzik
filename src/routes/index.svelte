@@ -123,7 +123,7 @@
         which they can be used to create new forms of expression.
       </p>
       <p>
-        This place is built with svelte, vite and typscript and is running on
+        This place is built with svelte, vite and typescript and is running on
         vercel.
       </p>
       <p>This pod was last updated on 21/09/2024</p>
