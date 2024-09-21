@@ -192,7 +192,7 @@
         This place is built with svelte, vite and typescript and is running on
         vercel.
       </p>
-      <p>Void Filamente was last updated on 26/05/2024</p>
+      <p>Void Filamente was last updated on 21/09/2024</p>
       <a href="https://www.are.na/robert-burtzik/channels">Are.na</a>
       <a href="https://www.instagram.com/rburtzik">Instagram</a>
       <a href="mailto:{email}">{email}</a>
