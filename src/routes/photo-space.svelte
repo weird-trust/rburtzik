@@ -4,7 +4,7 @@
   let images: string[] = ["1.jpg", "2.jpg", "3.jpg"];
 
   let currentIndex: number = 0;
-  let interval: NodeJS.Timeout;
+  let interval: number;
 
   onMount((): void => {
     interval = setInterval(() => {

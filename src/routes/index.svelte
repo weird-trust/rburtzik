@@ -11,6 +11,7 @@
   let email: string;
   let currentTime: string = "";
   let status: string = "";
+  let permissionGranted: boolean = false;
 
   function initializeGrid(): void {
     for (let i = 0; i < rows; i++) {
@@ -42,6 +43,23 @@
     const y = event.clientY - rect.top;
     const col = Math.floor((x / rect.width) * cols);
     const row = Math.floor((y / rect.height) * rows);
+
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        const dx = j - col;
+        const dy = i - row;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+        const influence = Math.max(0, 1 - distance / 5); // Einflussfaktor basierend auf der Entfernung
+        rotations[i][j] = rotations[i][j] * (1 - influence) + angle * influence;
+      }
+    }
+  }
+
+  function handleDeviceOrientation(event: DeviceOrientationEvent): void {
+    const { alpha, beta, gamma } = event;
+    const col = Math.floor((((gamma ?? 0) + 90) / 180) * cols);
+    const row = Math.floor((((beta ?? 0) + 90) / 180) * rows);
 
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < cols; j++) {
@@ -89,12 +107,33 @@
     }
   }
 
+  async function requestPermission() {
+    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+      try {
+        const permissionState =
+          await DeviceOrientationEvent.requestPermission();
+        if (permissionState === "granted") {
+          permissionGranted = true;
+          window.addEventListener("deviceorientation", handleDeviceOrientation);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      permissionGranted = true;
+      window.addEventListener("deviceorientation", handleDeviceOrientation);
+    }
+  }
+
   onMount((): void => {
     initializeGrid();
     animationFrame = requestAnimationFrame(animate);
     email = decodeEmail("eboregohegmvx@tznvy.pbz");
     updateTime();
     setInterval(updateTime, 1000); // Aktualisiere die Uhrzeit jede Sekunde
+
+    // Anfrage zur Nutzung des Gyroskops
+    requestPermission();
   });
 
   function stopAnimation(): void {
@@ -148,7 +187,7 @@
         This place is built with svelte, vite and typescript and is running on
         vercel.
       </p>
-      <p>Void Filamente was last updated on 21/09/2024</p>
+      <p>Void Filamente was last updated on 26/05/2024</p>
       <a href="https://www.are.na/robert-burtzik/channels">Are.na</a>
       <a href="https://www.instagram.com/rburtzik">Instagram</a>
       <a href="mailto:{email}">{email}</a>
@@ -163,12 +202,6 @@
     margin: 0 0 20px 0;
   }
 
-  .imprint {
-    bottom: -1rem;
-    margin-top: 2rem;
-    position: absolute;
-    right: 0.5rem;
-  }
   nav {
     bottom: 2rem;
     max-width: 800px;
@@ -200,6 +233,8 @@
   .ascii-grid {
     user-select: none;
     display: inline-block;
+    width: 100%; /* Passt die Breite des Grids an den Viewport an */
+    max-width: 100%; /* Verhindert Überlauf */
     background: #aaa;
     color: #333;
     font-family: "CommitMono", "Courier New", Courier, monospace;
@@ -211,6 +246,7 @@
 
   .ascii-row {
     display: flex;
+    justify-content: center; /* Zentriert die Zeileninhalte */
   }
 
   .ascii-row span {
