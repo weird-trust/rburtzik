@@ -230,6 +230,12 @@
     margin: 0 auto;
   }
 
+  @media (max-width: 768px) {
+    main {
+      padding: 25px;
+    }
+  }
+
   footer {
     border: 1px double #000;
     padding: 1.5rem 2rem 0 2rem;

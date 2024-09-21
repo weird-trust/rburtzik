@@ -22,8 +22,8 @@ main {
 }
 
 
-@media (min-width: 768px) {
- main{
+@media (max-width: 768px) {
+ main {
   padding: 25px;
   }
 }
