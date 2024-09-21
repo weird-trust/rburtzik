@@ -57,7 +57,7 @@
   }
 
   function handleDeviceOrientation(event: DeviceOrientationEvent): void {
-    const { alpha, beta, gamma } = event;
+    const { beta, gamma } = event;
     const col = Math.floor((((gamma ?? 0) + 90) / 180) * cols);
     const row = Math.floor((((beta ?? 0) + 90) / 180) * rows);
 
@@ -150,6 +150,9 @@
   <p class="time">
     Current Time: {@html currentTime}
   </p>
+  <button on:click={requestPermission} class="permission-button">
+    Enable Gyroscope
+  </button>
   <div
     class="ascii-grid"
     role="button"
@@ -273,5 +276,19 @@
 
   .status {
     font-weight: bold;
+  }
+
+  .permission-button {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-family: "CommitMono", "Courier New", Courier, monospace;
+  }
+
+  .permission-button:hover {
+    background-color: #333;
   }
 </style>
