@@ -67,7 +67,7 @@
         const dy = i - row;
         const distance = Math.sqrt(dx * dx + dy * dy);
         const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-        const influence = Math.max(0, 1 - distance / 5); // Einflussfaktor basierend auf der Entfernung
+        const influence = Math.max(0, 1 - distance / 2); // Stärkere Bewegung basierend auf der Entfernung
         rotations[i][j] = rotations[i][j] * (1 - influence) + angle * influence;
       }
     }
@@ -190,7 +190,7 @@
         This place is built with svelte, vite and typescript and is running on
         vercel.
       </p>
-      <p>Void Filamente was last updated on 26/05/2024</p>
+      <p>Void Filamente was last updated on 21/09/2024</p>
       <a href="https://www.are.na/robert-burtzik/channels">Are.na</a>
       <a href="https://www.instagram.com/rburtzik">Instagram</a>
       <a href="mailto:{email}">{email}</a>
@@ -290,5 +290,11 @@
 
   .permission-button:hover {
     background-color: #333;
+  }
+
+  @media (min-width: 768px) {
+    .permission-button {
+      display: none;
+    }
   }
 </style>
