@@ -155,9 +155,8 @@
       <div class="modal-content">
         <p>
           This site uses your device's gyroscope to interact with the wandering
-          flow of ASCII characters. Please enable the gyroscope to experience
-          this interactive feature. A simple touch on the canvas will enable the
-          gyroscope.
+          flow of ASCII characters. A simple touch on the canvas will enable the
+          gyroscope, but first you have to allow it.
         </p>
         <button on:click={requestPermission} class="permission-button">
           Enable Gyroscope
