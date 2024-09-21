@@ -151,9 +151,18 @@
     Current Time: {@html currentTime}
   </p>
   {#if !permissionGranted}
-    <button on:click={requestPermission} class="permission-button">
-      Enable Gyroscope
-    </button>
+    <div class="modal">
+      <div class="modal-content">
+        <p>
+          This site uses your device's gyroscope to create a wandering flow of
+          ASCII characters. Please enable the gyroscope to experience this
+          interactive feature.
+        </p>
+        <button on:click={requestPermission} class="permission-button">
+          Enable Gyroscope
+        </button>
+      </div>
+    </div>
   {/if}
   <div
     class="ascii-grid"
@@ -287,7 +296,7 @@
   }
 
   .permission-button {
-    margin-bottom: 20px;
+    margin-top: 20px;
     padding: 10px 20px;
     background-color: #000;
     color: #fff;
@@ -298,6 +307,28 @@
 
   .permission-button:hover {
     background-color: #333;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 90%;
+    font-family: "CommitMono", "Courier New", Courier, monospace;
   }
 
   @media (min-width: 768px) {
