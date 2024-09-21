@@ -312,7 +312,6 @@
 
   .modal {
     position: fixed;
-    padding: 20px;
     top: 0;
     left: 0;
     width: 100%;
