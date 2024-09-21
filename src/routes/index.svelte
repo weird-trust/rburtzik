@@ -154,9 +154,10 @@
     <div class="modal">
       <div class="modal-content">
         <p>
-          This site uses your device's gyroscope to create a wandering flow of
-          ASCII characters. Please enable the gyroscope to experience this
-          interactive feature.
+          This site uses your device's gyroscope to interact with the wandering
+          flow of ASCII characters. Please enable the gyroscope to experience
+          this interactive feature. A simple touch on the canvas will enable the
+          gyroscope.
         </p>
         <button on:click={requestPermission} class="permission-button">
           Enable Gyroscope
@@ -311,6 +312,7 @@
 
   .modal {
     position: fixed;
+    padding: 20px;
     top: 0;
     left: 0;
     width: 100%;
