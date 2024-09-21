@@ -152,10 +152,10 @@
       <a href="https://www.are.na/robert-burtzik/channels">Are.na</a>
       <a href="https://www.instagram.com/rburtzik">Instagram</a>
       <a href="mailto:{email}">{email}</a>
+      <p>© 2024 Robert Burtzik. All rights reserved.</p>
     </footer>
     <!-- <a href="/photo-space">Photo Space</a> -->
   </nav>
-  <p class="imprint">© 2024 Robert Burtzik. All rights reserved.</p>
 </main>
 
 <style>
