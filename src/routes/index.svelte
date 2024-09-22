@@ -18,7 +18,7 @@
       grid[i] = [];
       rotations[i] = [];
       for (let j = 0; j < cols; j++) {
-        grid[i][j] = "/";
+        grid[i][j] = "/"; // ASCII-Zeichen
         rotations[i][j] = 0; // Initialrotation auf 0 setzen
       }
     }
@@ -108,10 +108,13 @@
   }
 
   async function requestPermission() {
-    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+    if (
+      typeof (DeviceOrientationEvent as any).requestPermission === "function"
+    ) {
       try {
-        const permissionState =
-          await DeviceOrientationEvent.requestPermission();
+        const permissionState = await (
+          DeviceOrientationEvent as any
+        ).requestPermission();
         if (permissionState === "granted") {
           permissionGranted = true;
           window.addEventListener("deviceorientation", handleDeviceOrientation);
