@@ -1,0 +1,1 @@
+import{aA as c,aB as i,aC as _,f as d,h as r,g as h,n as u,m as b,U as k,o as v,aD as y}from"./runtime.D5jDPlfy.js";const l=!0;function g(n,o,t){r&&h();var s=n,e=k,a,f=c()?i:_;d(()=>{f(e,e=o())&&(a&&u(a),a=b(()=>t(s)))}),r&&(s=v)}const m=l,p=y;export{m as b,p as d,g as k};

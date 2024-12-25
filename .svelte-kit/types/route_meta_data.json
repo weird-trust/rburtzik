@@ -1,0 +1,13 @@
+{
+	"/": [],
+	"/about": [],
+	"/demo": [],
+	"/demo/paraglide": [],
+	"/photo": [],
+	"/projects": [
+		"src/routes/projects/+page.ts"
+	],
+	"/projects/[projectId]": [
+		"src/routes/projects/[projectId]/+page.ts"
+	]
+}
