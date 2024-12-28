@@ -9,6 +9,22 @@
       "_paths.js"
     ]
   },
+  "_ProjectArrows.D2cnZruE.css": {
+    "file": "_app/immutable/assets/ProjectArrows.D2cnZruE.css",
+    "src": "_ProjectArrows.D2cnZruE.css"
+  },
+  "_ProjectArrows.js": {
+    "file": "chunks/ProjectArrows.js",
+    "name": "ProjectArrows",
+    "imports": [
+      "_index.js",
+      "_index3.js",
+      "_projects.js"
+    ],
+    "css": [
+      "_app/immutable/assets/ProjectArrows.D2cnZruE.css"
+    ]
+  },
   "_ProjectArrowsDetail.D3Mq8gzJ.css": {
     "file": "_app/immutable/assets/ProjectArrowsDetail.D3Mq8gzJ.css",
     "src": "_ProjectArrowsDetail.D3Mq8gzJ.css"
@@ -150,7 +166,7 @@
       "_index3.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.rxKJra1O.css"
+      "_app/immutable/assets/_layout.UMPoSTHn.css"
     ]
   },
   "src/routes/+page.svelte": {
@@ -161,10 +177,10 @@
     "imports": [
       "_index.js",
       "_index3.js",
-      "_ProjectArrowsDetail.js"
+      "_ProjectArrows.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.lica9ELp.css"
+      "_app/immutable/assets/_page.Min1RGph.css"
     ]
   },
   "src/routes/about/+page.svelte": {
@@ -174,10 +190,11 @@
     "isEntry": true,
     "imports": [
       "_index.js",
-      "_index3.js"
+      "_index3.js",
+      "_ProjectArrowsDetail.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.CNw1gwdt.css"
+      "_app/immutable/assets/_page.NZ2nUy-d.css"
     ]
   },
   "src/routes/demo/+page.svelte": {
@@ -222,10 +239,10 @@
     "imports": [
       "_index.js",
       "_index3.js",
-      "_projects.js"
+      "_ProjectArrows.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.BtrJNgR4.css"
+      "_app/immutable/assets/_page.DMrV6uvo.css"
     ]
   },
   "src/routes/projects/+page.ts": {
@@ -245,10 +262,11 @@
     "imports": [
       "_index.js",
       "_index3.js",
+      "_projects.js",
       "_ProjectArrowsDetail.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.CxYWZmqP.css"
+      "_app/immutable/assets/_page.B8buamAO.css"
     ]
   },
   "src/routes/projects/[projectId]/+page.ts": {

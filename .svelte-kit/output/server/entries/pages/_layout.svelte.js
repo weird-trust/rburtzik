@@ -105,9 +105,9 @@ function _layout($$payload, $$props) {
   ParaglideJS($$payload, {
     i18n,
     children: ($$payload2) => {
-      $$payload2.out += `<div class="layout svelte-tm0bp9"><header></header> <main class="svelte-tm0bp9">`;
+      $$payload2.out += `<header></header> `;
       children($$payload2);
-      $$payload2.out += `<!----></main> <footer></footer></div>`;
+      $$payload2.out += `<!----> <footer></footer>`;
     },
     $$slots: { default: true }
   });

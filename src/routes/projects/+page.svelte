@@ -7,7 +7,6 @@
     <a href="/" class="nav-link home">Robert Burtzik</a>
     <a href="/" class="nav-link close">Close Projects</a>
     <a href="/about" class="nav-link about">About</a>
-    <a href="/photo" class="nav-link photo">Photo</a>
 </main>
 
 <style>

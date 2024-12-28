@@ -1,6 +1,6 @@
 <script lang="ts">
 	import P5 from '$lib/components/p5.svelte';
-	import ProjectArrowsDetail from '$lib/components/ProjectArrowsDetail.svelte';
+	import ProjectArrows from '$lib/components/ProjectArrows.svelte';
 	import { onMount } from 'svelte';
 
 	let status: string = 'offline';
@@ -66,47 +66,26 @@
         hoveredProject = null;
     }
 </script>
-
-    <ProjectArrowsDetail />
-	<main on:mousemove={handleMouseMove}>
-		<a href="/" class="nav-link home">Robert Burtzik</a>
+	<main on:mousemove={handleMouseMove} on:mouseleave={handleMouseLeave} on:mouseenter={(e) => handleMouseEnter(e, 'home')}>   
 		<a href="/projects" class="nav-link close">Projects</a>
-		<a href="/about" class="nav-link about">About</a>
-		<a href="/photo" class="nav-link photo">Photo</a>
+		<!-- <a href="/about" class="nav-link about">About</a> -->
 		<div class="clock nav-link">
 			{timeObj.hours}<span class="blink">:</span>{timeObj.minutes}<span class="blink">:</span>{timeObj.seconds}
 		</div>
-	<div>
-		<p class="intro">
-			Robert Burtzik is a designer and developer based in Hamburg. He is interested in the
-			intersection of design, technology, and culture. He is currently <span class="status" data-status={status}>● {status}</span>. He has worked on various 
-			<a href="/projects" rel="noopener noreferrer">projects</a> such as
-			<a href="/projects/haus-der-kunst" rel="noopener noreferrer"
-				>Haus der Kunst München</a
-			>,
-			<a href="/projects/hilti" rel="noopener noreferrer">Hilti</a>
-		</p>
-	</div>
-	<P5/>
-
-	<nav>
-		<footer>
-			<p>
-				This site is a wandering flow, a collection of filaments, a promise of perception in both
-				their analog and digital nature. It seeks to explore the motivations behind the creation of
-				digital spaces and the ways in which they can be used to create new forms of expression.
-			</p>
-			<p>This place is built with svelte, vite and typescript and is running on vercel.</p>
-			<p>Void Filamente was last updated on 21/09/2024</p>
-			<a href="https://www.are.na/robert-burtzik/channels">Are.na</a>
-			<a href="https://www.instagram.com/rburtzik">Instagram</a>
-			<a href="mailto:{email}">Mail</a>
-			<a href="https://cv.robertburtzik.com">CV</a>
-			<p>© 2025 Robert Burtzik. All rights reserved.</p>
-		</footer>
-		<!-- <a href="/photo-space">Photo Space</a> -->
-	</nav>
-</main>
+        <div>
+            <p class="intro">
+                Robert Burtzik is a designer and developer based in Hamburg. He is interested in the
+                intersection of design, technology, and culture. He is currently <span class="status" data-status={status}>● {status}</span>. He has worked on various 
+                <a href="/projects" rel="noopener noreferrer">projects</a> such as
+                <a href="/projects/haus-der-kunst" rel="noopener noreferrer"
+                    >Haus der Kunst München</a
+                >,
+                <a href="/projects/hilti" rel="noopener noreferrer">Hilti</a>
+            </p>
+        </div>
+        <P5/>
+    </main>
+    <ProjectArrows />
 
 <style>
     main {
@@ -159,24 +138,6 @@
         50% { opacity: 0; }
     }
 
-	footer {
-        margin: 5rem auto 0 auto;
-        border: 1px double #000;
-        padding: 1.5rem 2rem 1rem 2rem;
-	}
-
-	nav a {
-		display: inline-block;
-		text-underline-offset: 0.2em;
-		color: #000;
-		padding-top: 1rem;
-		padding-bottom: 1rem;
-	}
-
-	nav a:hover {
-		color: blue;
-	}
-
 	.nav-link:hover {
 		color: blue;
 	}
@@ -189,13 +150,6 @@
         color: #000;
         position: fixed;
 
-    }
-
-    .home {
-        left: 2rem;
-        top: 0.8rem;
-        width: 500px;
-        background: white;
     }
 
     .clock {
@@ -212,11 +166,6 @@
 
     .about {
         right: 2rem;
-        bottom: 0.8rem;
-    }
-
-    .photo {
-        left: 2rem;
         bottom: 0.8rem;
     }
 

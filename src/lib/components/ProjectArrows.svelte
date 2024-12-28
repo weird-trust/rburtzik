@@ -41,7 +41,7 @@
 
 </script>
 
-<main on:mousemove={handleMouseMove}>
+<div class="projects" role="presentation" on:mousemove={handleMouseMove}>
     {#each projects as project, projectIndex}
         <section class="project-section" data-project-id={project.id}>
             <div class="arrow-container">
@@ -101,10 +101,10 @@
             </a>
         </section>
     {/each}
-</main>
+</div>
 
 <style>
-    main {
+    div.projects {
         height: 100vh;
         width: 100vw;
         overflow-y: auto;

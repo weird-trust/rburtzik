@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import ProjectArrowsDetail from "$lib/components/ProjectArrowsDetail.svelte";
 
   let grid: string[][] = [];
   const rows: number = 20;
@@ -144,14 +145,7 @@
 </script>
 
 <main>
-  <p>
-    Robert Burtzik is a designer and developer based in Hamburg. He is
-    interested in the intersection of design, technology, and culture. He is
-    currently <span class="status">{status}</span>.
-  </p>
-  <p class="time">
-    Current Time: {@html currentTime}
-  </p>
+  <ProjectArrowsDetail />
   {#if !permissionGranted}
     <div class="modal">
       <div class="modal-content">
@@ -191,26 +185,23 @@
     {/each}
   </div>
 
-  <nav>
-    <footer>
-      <p>
-        This site is a wandering flow, a collection of filaments, a promise of
-        perception in both their analog and digital nature. It seeks to explore
-        the motivations behind the creation of digital spaces and the ways in
-        which they can be used to create new forms of expression.
-      </p>
-      <p>
-        This place is built with svelte, vite and typescript and is running on
-        vercel.
-      </p>
-      <p>Void Filamente was last updated on 21/09/2024</p>
-      <a href="https://www.are.na/robert-burtzik/channels">Are.na</a>
-      <a href="https://www.instagram.com/rburtzik">Instagram</a>
-      <a href="mailto:{email}">{email}</a>
-      <p>© 2024 Robert Burtzik. All rights reserved.</p>
-    </footer>
-    <!-- <a href="/photo-space">Photo Space</a> -->
-  </nav>
+	<nav>
+		<footer>
+			<p>
+				This site is a wandering flow, a collection of filaments, a promise of perception in both
+				their analog and digital nature. It seeks to explore the motivations behind the creation of
+				digital spaces and the ways in which they can be used to create new forms of expression.
+			</p>
+			<p>This place is built with svelte, vite and typescript and is running on vercel.</p>
+			<p>Void Filamente was last updated on 21/09/2024</p>
+			<a href="https://www.are.na/robert-burtzik/channels">Are.na</a>
+			<a href="https://www.instagram.com/rburtzik">Instagram</a>
+			<a href="mailto:{email}">Mail</a>
+			<a href="https://cv.robertburtzik.com">CV</a>
+			<p>© 2025 Robert Burtzik. All rights reserved.</p>
+		</footer>
+		<!-- <a href="/photo-space">Photo Space</a> -->
+	</nav>
 </main>
 
 <style>

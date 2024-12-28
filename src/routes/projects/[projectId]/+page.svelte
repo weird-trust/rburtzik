@@ -60,7 +60,9 @@
                 {#if item.type === 'image'}
                     <img src={item.url} alt={item.alt} />
                 {:else if item.type === 'video'}
-                    <video src={item.url} controls />
+                    <video src={item.url} controls>
+                        <track kind="captions" src={item.captions} srclang="en" label="English">
+                    </video>
                 {/if}
             {/each}
         </div>
