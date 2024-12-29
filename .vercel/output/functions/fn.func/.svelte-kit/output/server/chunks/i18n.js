@@ -1,3 +1,4 @@
+import "clsx";
 import "./client.js";
 import { negotiateLanguagePreferences, bestMatch, resolveRoute } from "@inlang/paraglide-js/internal/adapter-utils";
 import { b as base } from "./paths.js";

@@ -1,3 +1,4 @@
+import "clsx";
 import { T as store_get, V as ensure_array_like, W as attr, X as unsubscribe_stores, Y as bind_props, S as pop, Q as push, Z as head, _ as slot, $ as fallback } from "../../chunks/index.js";
 import { n as normaliseBase, p as page, a as parseRoute, s as serializeRoute, g as getHrefBetween, i as i18n } from "../../chunks/i18n.js";
 import { b as base } from "../../chunks/paths.js";
@@ -6,7 +7,7 @@ import "../../chunks/client.js";
 import { s as setParaglideContext } from "../../chunks/index3.js";
 import "@inlang/paraglide-js/internal/adapter-utils";
 function isExternal(url, currentUrl, base2) {
-  const absoluteBase = new URL(base2 ?? "/", currentUrl).pathname;
+  const absoluteBase = new URL(base2, currentUrl).pathname;
   return url.origin !== currentUrl.origin || !url.pathname.startsWith(absoluteBase);
 }
 function AlternateLinks($$payload, $$props) {

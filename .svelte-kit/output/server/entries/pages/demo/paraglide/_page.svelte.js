@@ -1,4 +1,5 @@
 import { a1 as escape_html, S as pop, Q as push } from "../../../../chunks/index.js";
+import "clsx";
 import { l as languageTag } from "../../../../chunks/i18n.js";
 import "../../../../chunks/client.js";
 const hello_world$2 = /* @__NO_SIDE_EFFECTS__ */ (params) => `Hello, ${params.name} from en!`;

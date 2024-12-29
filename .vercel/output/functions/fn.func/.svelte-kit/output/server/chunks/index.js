@@ -1,3 +1,4 @@
+import { clsx as clsx$1 } from "clsx";
 const BROWSER = false;
 var is_array = Array.isArray;
 var array_from = Array.from;
@@ -324,7 +325,7 @@ function pause_effect(effect2, callback) {
   pause_children(effect2, transitions, true);
   run_out_transitions(transitions, () => {
     destroy_effect(effect2);
-    if (callback) callback();
+    callback();
   });
 }
 function run_out_transitions(transitions, fn) {
@@ -946,6 +947,13 @@ function attr(name, value, is_boolean = false) {
   const assignment = is_boolean ? "" : `="${escape_html(normalized, true)}"`;
   return ` ${name}${assignment}`;
 }
+function clsx(value) {
+  if (typeof value === "object") {
+    return clsx$1(value);
+  } else {
+    return value ?? "";
+  }
+}
 function subscribe_to_store(store, run, invalidate) {
   if (store == null) {
     run(void 0);
@@ -1041,6 +1049,9 @@ function head(payload, fn) {
   head_payload.out += BLOCK_CLOSE;
 }
 function spread_attributes(attrs, classes, styles, flags = 0) {
+  if (attrs.class) {
+    attrs.class = clsx(attrs.class);
+  }
   let attr_str = "";
   let name;
   const is_html = (flags & ELEMENT_IS_NAMESPACED) === 0;
