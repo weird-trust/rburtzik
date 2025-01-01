@@ -6,25 +6,25 @@ function P5($$payload, $$props) {
   let grid = [];
   let rotations = [];
   const each_array = ensure_array_like(grid);
-  $$payload.out += `<main class="svelte-zn78re">`;
+  $$payload.out += `<div class="ascii-wrapper svelte-mlk2xk">`;
   {
     $$payload.out += "<!--[-->";
-    $$payload.out += `<div class="modal svelte-zn78re"><div class="modal-content svelte-zn78re"><p class="svelte-zn78re">This site uses your device's gyroscope to interact with the wandering
-            flow of ASCII characters. A simple touch on the canvas will enable the
-            gyroscope, but first you have to allow it.</p> <button class="permission-button svelte-zn78re">Enable Gyroscope</button></div></div>`;
+    $$payload.out += `<div class="modal svelte-mlk2xk"><div class="modal-content svelte-mlk2xk"><p class="svelte-mlk2xk">This site uses your device's gyroscope to interact with the wandering flow of ASCII
+					characters. A simple touch on the canvas will enable the gyroscope, but first you have to
+					allow it.</p> <button class="permission-button svelte-mlk2xk">Enable Gyroscope</button></div></div>`;
   }
-  $$payload.out += `<!--]--> <div class="ascii-grid svelte-zn78re" role="button" tabindex="0"><!--[-->`;
+  $$payload.out += `<!--]--> <div class="ascii-grid svelte-mlk2xk" role="button" tabindex="0"><!--[-->`;
   for (let rowIndex = 0, $$length = each_array.length; rowIndex < $$length; rowIndex++) {
     let row = each_array[rowIndex];
     const each_array_1 = ensure_array_like(row);
-    $$payload.out += `<div class="ascii-row svelte-zn78re"><!--[-->`;
+    $$payload.out += `<div class="ascii-row svelte-mlk2xk"><!--[-->`;
     for (let colIndex = 0, $$length2 = each_array_1.length; colIndex < $$length2; colIndex++) {
       let cell = each_array_1[colIndex];
-      $$payload.out += `<span${attr("style", `transform: rotate(${stringify(rotations[rowIndex][colIndex])}deg)`)} class="svelte-zn78re">${escape_html(cell)}</span>`;
+      $$payload.out += `<span${attr("style", `transform: rotate(${stringify(rotations[rowIndex][colIndex])}deg)`)} class="svelte-mlk2xk">${escape_html(cell)}</span>`;
     }
     $$payload.out += `<!--]--></div>`;
   }
-  $$payload.out += `<!--]--></div></main>`;
+  $$payload.out += `<!--]--></div></div>`;
   pop();
 }
 function _page($$payload, $$props) {
@@ -36,10 +36,10 @@ function _page($$payload, $$props) {
     paraglide_sveltekit_translate_attribute_pass_translateAttribute,
     paraglide_sveltekit_translate_attribute_pass_handle_attributes
   ] = paraglide_sveltekit_translate_attribute_pass_translationFunctions;
-  $$payload.out += `<main class="svelte-kuyvbr"><a${attr("href", paraglide_sveltekit_translate_attribute_pass_translateAttribute(`/projects`, void 0))} class="nav-link close svelte-kuyvbr">Projects</a> <div class="clock nav-link svelte-kuyvbr">${escape_html(timeObj.hours)}<span class="blink svelte-kuyvbr">:</span>${escape_html(timeObj.minutes)}<span class="blink svelte-kuyvbr">:</span>${escape_html(timeObj.seconds)}</div> <div class="svelte-kuyvbr"><p class="intro svelte-kuyvbr">Robert Burtzik is a designer and developer based in Hamburg. He is interested in the
-                intersection of design, technology, and culture. He is currently <span class="status svelte-kuyvbr"${attr("data-status", status)}>● ${escape_html(status)}</span>. He has worked on various <a${attr("href", paraglide_sveltekit_translate_attribute_pass_translateAttribute(`/projects`, void 0))} rel="noopener noreferrer" class="svelte-kuyvbr">projects</a> such as <a${attr("href", paraglide_sveltekit_translate_attribute_pass_translateAttribute(`/projects/haus-der-kunst`, void 0))} rel="noopener noreferrer" class="svelte-kuyvbr">Haus der Kunst München</a>, <a${attr("href", paraglide_sveltekit_translate_attribute_pass_translateAttribute(`/projects/hilti`, void 0))} rel="noopener noreferrer" class="svelte-kuyvbr">Hilti</a></p></div> `;
+  $$payload.out += `<main class="svelte-grbebf"><a${attr("href", paraglide_sveltekit_translate_attribute_pass_translateAttribute(`/about`, void 0))} class="nav-link about svelte-grbebf">Imprint</a> <div class="clock nav-link svelte-grbebf">${escape_html(timeObj.hours)}<span class="blink svelte-grbebf">:</span>${escape_html(timeObj.minutes)}<span class="blink svelte-grbebf">:</span>${escape_html(timeObj.seconds)}</div> <div class="p5-wrapper svelte-grbebf">`;
   P5($$payload);
-  $$payload.out += `<!----></main> `;
+  $$payload.out += `<!----></div> <div class="svelte-grbebf"><p class="intro svelte-grbebf">Robert Burtzik is a designer and developer based in Hamburg. He is interested in the
+			intersection of design, technology, and culture. He is currently <span class="status svelte-grbebf"${attr("data-status", status)}>● ${escape_html(status)}</span>. He has recently worked on <a${attr("href", paraglide_sveltekit_translate_attribute_pass_translateAttribute(`#haus-der-kunst`, void 0))} class="svelte-grbebf">Haus der Kunst München</a>, <a${attr("href", paraglide_sveltekit_translate_attribute_pass_translateAttribute(`#shoah-memorial`, void 0))} class="svelte-grbebf">Shoah Memorial Frankfurt</a>, <a${attr("href", paraglide_sveltekit_translate_attribute_pass_translateAttribute(`#kampnagel`, void 0))} class="svelte-grbebf">Kampnagel</a>, <a${attr("href", paraglide_sveltekit_translate_attribute_pass_translateAttribute(`#internet-changed-my-life`, void 0))} class="svelte-grbebf">internet changed my life</a>.</p></div> <button class="scroll-hint svelte-grbebf">scroll to projects</button></main> `;
   ProjectArrows($$payload);
   $$payload.out += `<!---->`;
   pop();

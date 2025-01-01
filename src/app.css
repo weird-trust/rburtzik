@@ -1,19 +1,18 @@
 @import './lib/styles/fonts.css';
 
 :root {
-  --font-mono: 'CommitMono', monospace;
-  --font-weight-regular: 400;
-  --font-weight-bold: 700;
+	--font-mono: 'CommitMono', monospace;
+	--font-weight-regular: 400;
+	--font-weight-bold: 700;
 }
 
 body {
 	font-family: var(--font-mono);
 	font-weight: var(--font-weight-regular);
-	font-size: 0.75rem;
+	font-size: 1rem;
 	line-height: 1rem;
 	background: white;
-	color: #000;
+	color: #333;
 	margin: 0;
 	padding: 0;
 }
-

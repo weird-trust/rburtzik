@@ -6,9 +6,5 @@
 </script>
 
 <ParaglideJS {i18n}>
-        <header>
-        </header>
-            {@render children()}
-        <footer>
-        </footer>
+    {@render children()}
 </ParaglideJS>

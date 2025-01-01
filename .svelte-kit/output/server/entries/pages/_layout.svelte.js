@@ -106,9 +106,8 @@ function _layout($$payload, $$props) {
   ParaglideJS($$payload, {
     i18n,
     children: ($$payload2) => {
-      $$payload2.out += `<header></header> `;
       children($$payload2);
-      $$payload2.out += `<!----> <footer></footer>`;
+      $$payload2.out += `<!---->`;
     },
     $$slots: { default: true }
   });
