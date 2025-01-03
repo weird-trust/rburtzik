@@ -4,22 +4,56 @@
 	import ProjectArrowsDetail from '$lib/components/ProjectArrowsDetail.svelte';
 	export let data: ProjectData;
 	const { project } = data;
-
+	import { onMount } from 'svelte';
+	import { animate } from 'motion';
+	import { isTransitioning } from '$lib/stores/transition';
+	import { goto } from '$app/navigation';
 	const currentIndex = projects.findIndex((p) => p.id === project.id);
 
 	const nextProject = projects[(currentIndex + 1) % projects.length];
+
+	onMount(() => {
+		animate(
+			'h1',
+			{
+				opacity: [0, 1],
+				y: [50, 0]
+			},
+			{ duration: 0.3, delay: 0.3 }
+		);
+
+		animate('.project-info, .media-grid, .description', {
+			opacity: [0, 1],
+			y: [30, 0]
+		});
+	});
+
+	async function handleNextProject(projectId: string, e: MouseEvent) {
+		e.preventDefault();
+		isTransitioning.set(true);
+
+		// Exit animations
+		await animate('article', { backgroundColor: ['#1a1a1a', '#fff'] }, { duration: 0.3 });
+
+		await animate(
+			'.next-title, .project-info, .media-grid, .description',
+			{
+				opacity: [1, 0],
+				y: [0, -30]
+			},
+			{ duration: 0.6 }
+		);
+
+		goto(`/projects/${projectId}`);
+	}
 </script>
 
 <ProjectArrowsDetail />
 <article>
 	<!-- Header Section -->
 	<header>
-		<div class="meta">
-			<span>{project.name}</span>
-			<span>{project.year}</span>
-			<span>{project.type}</span>
-		</div>
-		<a href="/" class="nav-link home">Robert Burtzik</a>
+		<a href="/" class="nav-link home">Close Project</a>
+		<a href="/about" class="nav-link about">Imprint</a>
 	</header>
 
 	<!-- Main Title -->
@@ -83,7 +117,11 @@
 	</div>
 
 	<footer class="next-project">
-		<a href="/projects/{nextProject.id}" class="next-project-link">
+		<a
+			href="/projects/{nextProject.id}"
+			class="next-project-link"
+			on:click={(e) => handleNextProject(nextProject.id, e)}
+		>
 			<span class="next-label">Next Project</span>
 			<h2 class="next-title">{nextProject.name}</h2>
 		</a>
@@ -94,22 +132,20 @@
 	article {
 		padding: 25px;
 		min-height: 100vh;
-	}
-
-	header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: 4rem;
+		background-color: #1a1a1a;
+		transition: background-color 0.8s ease-in-out;
 	}
 
 	.description {
 		font-family: Helvetica, sans-serif;
 		font-size: 1.5rem;
+		font-weight: normal;
 		line-height: 1.1;
 		text-align: left;
-		letter-spacing: -0.02em;
-		width: 60vw;
+		letter-spacing: -0.015em;
+		width: 100%;
+		max-width: 800px;
+		margin: 0 auto;
 	}
 
 	@media (max-width: 768px) {
@@ -120,21 +156,25 @@
 
 	.description p {
 		margin-bottom: 1.5rem;
+		color: white;
 	}
 
 	.description .intro {
 		margin-bottom: 3rem;
+		color: white;
 	}
 
 	.section {
 		margin-bottom: 3rem;
 		text-align: left;
+		color: white;
 	}
 
 	.section ul {
 		padding-left: 0;
 		list-style-position: inside;
 		max-width: 42.5rem;
+		color: white;
 	}
 
 	.section h3 {
@@ -143,25 +183,16 @@
 		margin-bottom: 1rem;
 		letter-spacing: -0.02em;
 		font-weight: 400;
+		color: white;
 	}
 
 	.section li {
 		margin-bottom: 0.5rem;
+		color: white;
 	}
 
 	.conclusion {
 		margin-top: 4rem;
-	}
-
-	.meta {
-		font-size: 10px;
-		position: fixed;
-		left: 2rem;
-		top: 0.8rem;
-	}
-
-	.meta span:not(:last-child)::after {
-		content: ', ';
 	}
 
 	.nav-link {
@@ -179,25 +210,42 @@
 	.home {
 		left: 2rem;
 		top: 0.8rem;
-		width: 500px;
-		background: white;
+		color: white;
 	}
-
-	.close {
-		right: 2rem;
-		top: 0.8rem;
-	}
-
 	.about {
 		right: 2rem;
 		bottom: 0.8rem;
+		color: white;
 	}
 
-	.photo {
-		left: 2rem;
-		bottom: 0.8rem;
-		width: 500px;
-		background: white;
+	h1,
+	.project-info,
+	.media-grid,
+	.description {
+		opacity: 0;
+		transform: translateY(30px);
+	}
+
+	.next-project-link {
+		transition: all 0.3s ease-in-out;
+	}
+
+	.next-title {
+		/* ...existing styles... */
+		transition:
+			transform 0.6s ease-out,
+			opacity 0.6s ease-out;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	h1 {
@@ -206,8 +254,9 @@
 		font-weight: 400;
 		letter-spacing: -0.07em;
 		line-height: 0.8;
-		margin: 0 0 4rem 0;
+		margin: 3rem 0 4rem 0;
 		text-align: center;
+		color: white;
 	}
 
 	.project-info {
@@ -224,11 +273,13 @@
 
 	.column h2 {
 		font-size: 10px;
+		color: white;
 		margin: 0 0 1rem 0;
 	}
 
 	.column p {
 		margin: 0 0 0.5rem 0;
+		color: white;
 	}
 
 	.media-grid {
@@ -257,7 +308,7 @@
 
 	.next-project-link {
 		text-decoration: none;
-		color: inherit;
+		color: white;
 		width: 100%;
 	}
 

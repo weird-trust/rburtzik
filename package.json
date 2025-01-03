@@ -36,6 +36,7 @@
 		"@sveltejs/adapter-auto": "^3.3.1",
 		"@types/p5": "^1.7.6",
 		"cloudinary": "^2.5.1",
+		"motion": "^11.15.0",
 		"p5": "^1.11.2"
 	}
 }

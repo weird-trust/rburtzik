@@ -9,9 +9,9 @@
       "_paths.js"
     ]
   },
-  "_ProjectArrows.CwpZTTvP.css": {
-    "file": "_app/immutable/assets/ProjectArrows.CwpZTTvP.css",
-    "src": "_ProjectArrows.CwpZTTvP.css"
+  "_ProjectArrows.DYi7WnhN.css": {
+    "file": "_app/immutable/assets/ProjectArrows.DYi7WnhN.css",
+    "src": "_ProjectArrows.DYi7WnhN.css"
   },
   "_ProjectArrows.js": {
     "file": "chunks/ProjectArrows.js",
@@ -19,15 +19,16 @@
     "imports": [
       "_index.js",
       "_index3.js",
-      "_projects.js"
+      "_projects.js",
+      "_client.js"
     ],
     "css": [
-      "_app/immutable/assets/ProjectArrows.CwpZTTvP.css"
+      "_app/immutable/assets/ProjectArrows.DYi7WnhN.css"
     ]
   },
-  "_ProjectArrowsDetail.D3Mq8gzJ.css": {
-    "file": "_app/immutable/assets/ProjectArrowsDetail.D3Mq8gzJ.css",
-    "src": "_ProjectArrowsDetail.D3Mq8gzJ.css"
+  "_ProjectArrowsDetail.BAHdcHAM.css": {
+    "file": "_app/immutable/assets/ProjectArrowsDetail.BAHdcHAM.css",
+    "src": "_ProjectArrowsDetail.BAHdcHAM.css"
   },
   "_ProjectArrowsDetail.js": {
     "file": "chunks/ProjectArrowsDetail.js",
@@ -36,7 +37,7 @@
       "_index.js"
     ],
     "css": [
-      "_app/immutable/assets/ProjectArrowsDetail.D3Mq8gzJ.css"
+      "_app/immutable/assets/ProjectArrowsDetail.BAHdcHAM.css"
     ]
   },
   "_client.js": {
@@ -180,7 +181,7 @@
       "_ProjectArrows.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.5g6zXkIM.css"
+      "_app/immutable/assets/_page.DhH0-_K-.css"
     ]
   },
   "src/routes/about/+page.svelte": {
@@ -263,10 +264,11 @@
       "_index.js",
       "_index3.js",
       "_projects.js",
-      "_ProjectArrowsDetail.js"
+      "_ProjectArrowsDetail.js",
+      "_client.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.BRYryqws.css"
+      "_app/immutable/assets/_page.g0_84bdq.css"
     ]
   },
   "src/routes/projects/[projectId]/+page.ts": {

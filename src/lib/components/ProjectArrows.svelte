@@ -2,6 +2,10 @@
 	import { projects } from '$lib/data/projects';
 	import { CldImage, CldVideoPlayer } from 'svelte-cloudinary';
 	import { browser } from '$app/environment';
+	import { animate } from 'motion';
+	import { onMount } from 'svelte';
+	import { isTransitioning } from '$lib/stores/transition';
+	import { goto } from '$app/navigation';
 
 	let loaded = false;
 
@@ -38,6 +42,25 @@
 		mouseY = 0;
 		hoveredMedia = null;
 	}
+
+	async function handleProjectClick(projectId: string, e: MouseEvent) {
+		e.preventDefault();
+
+		// Start transition
+		isTransitioning.set(true);
+
+		// Animate project title
+		await animate(
+			'.project-title h2',
+			{
+				opacity: [1, 0],
+				y: [0, -100]
+			},
+			{ duration: 0.5 }
+		);
+
+		goto(`/projects/${projectId}`);
+	}
 </script>
 
 <div id="projects" class="projects" role="presentation" on:mousemove={handleMouseMove}>
@@ -61,7 +84,11 @@
 					</div>
 				{/each}
 			</div>
-			<a href={`/projects/${project.id}`} class="project-title">
+			<a
+				href={`/projects/${project.id}`}
+				class="project-title"
+				on:click={(e) => handleProjectClick(project.id, e)}
+			>
 				<h2>{project.name}</h2>
 				{#if project.media?.[0]}
 					<div
@@ -105,6 +132,9 @@
 </div>
 
 <style>
+	:global(body) {
+		transition: background-color 0.4s ease-in-out;
+	}
 	div.projects {
 		height: 100vh;
 		width: 100vw;
@@ -179,6 +209,9 @@
 	}
 
 	.project-title {
+		transition:
+			transform 0.6s ease-out,
+			opacity 0.6s ease-out;
 		position: absolute;
 		top: 50%;
 		left: 50%;

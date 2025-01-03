@@ -3,14 +3,8 @@
 	import ProjectArrows from '$lib/components/ProjectArrows.svelte';
 	import { onMount } from 'svelte';
 
+	let onlineTimes = 'Mo - So: 14:00 - 00:00';
 	let status: string = 'offline';
-	let email: string;
-
-	function decodeEmail(encoded: string): string {
-		return encoded.replace(/[a-zA-Z]/g, function (c) {
-			return String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
-		});
-	}
 
 	let timeObj = { hours: '00', minutes: '00', seconds: '00' };
 
@@ -31,9 +25,8 @@
 		status = now.getHours() >= 14 || now.getHours() < 2 ? 'online' : 'offline';
 	}
 
-	onMount((): void => {
+	onMount((): (() => void) => {
 		updateTime();
-		email = decodeEmail('eboregohegmvx@tznvy.pbz');
 		const interval = setInterval(updateTime, 1000);
 		return () => clearInterval(interval);
 	});
@@ -80,7 +73,7 @@
 	on:mouseleave={handleMouseLeave}
 	on:mouseenter={(e) => handleMouseEnter(e, 'home')}
 >
-	<!-- <a href="/projects" class="nav-link close">Projects</a> -->
+	<!-- <a href="/" class="nav-link home">Robert Burtzik</a> -->
 	<a href="/about" class="nav-link about">Imprint</a>
 	<div class="clock nav-link">
 		{timeObj.hours}<span class="blink">:</span>{timeObj.minutes}<span class="blink">:</span
@@ -92,10 +85,10 @@
 	<div>
 		<p class="intro">
 			Robert Burtzik is a designer and developer based in Hamburg. He is interested in the
-			intersection of design, technology, and culture. He is currently <span
-				class="status"
-				data-status={status}>● {status}</span
-			>. He has recently worked on
+			intersection of design, technology, and culture. He is currently <span class="tooltip">
+				<span class="status" data-status={status}>● {status}</span>
+				<span class="tooltiptext">{onlineTimes}</span>
+			</span>. <br /><br /> He has recently worked on
 
 			<a href="#haus-der-kunst" on:click={(e) => handleClick(e, '#haus-der-kunst')}
 				>Haus der Kunst München</a
@@ -113,7 +106,12 @@
 
 	<button
 		class="scroll-hint"
-		on:click={() => document.getElementById('projects').scrollIntoView({ behavior: 'smooth' })}
+		on:click={() => {
+			const projectsElement = document.getElementById('projects');
+			if (projectsElement) {
+				projectsElement.scrollIntoView({ behavior: 'smooth' });
+			}
+		}}
 	>
 		scroll to projects
 	</button>
@@ -140,14 +138,13 @@
 
 	a {
 		color: inherit;
-		text-decoration: none;
-		color: blue;
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
 	}
 
 	a:hover {
 		cursor: pointer;
 		text-decoration: underline;
-		text-underline-offset: 0.2em;
 		color: blue;
 	}
 
@@ -157,6 +154,37 @@
 		line-height: 1.1;
 		letter-spacing: -0.02em;
 		margin-bottom: 2rem;
+		text-align: center;
+	}
+
+	.tooltip {
+		position: relative;
+		display: inline-block;
+		cursor: pointer;
+	}
+
+	.tooltip .tooltiptext {
+		visibility: hidden;
+		width: 120px;
+		background-color: black;
+		color: #fff;
+		text-align: center;
+		font-size: 10px;
+		font-family: var(--font-mono);
+		border-radius: 6px;
+		padding: 5px 0;
+		position: absolute;
+		z-index: 1;
+		bottom: 100%;
+		left: 50%;
+		margin-left: -55px;
+		opacity: 0;
+		transition: opacity 0.3s;
+	}
+
+	.tooltip:hover .tooltiptext {
+		visibility: visible;
+		opacity: 1;
 	}
 
 	.scroll-hint {
@@ -223,15 +251,12 @@
 	}
 
 	.clock {
-		left: 50%;
+		right: 0.5rem;
 		transform: translateX(-50%);
 		top: 0.8rem;
 		text-decoration: none;
-	}
-
-	.close {
-		right: 2rem;
-		top: 0.8rem;
+		font-size: 10px;
+		color: #333;
 	}
 
 	.about {
