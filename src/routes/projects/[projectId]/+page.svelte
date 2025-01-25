@@ -1,16 +1,43 @@
 <script lang="ts">
 	import type { ProjectData } from '$lib/types';
 	import { projects } from '$lib/data/projects';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { afterNavigate } from '$app/navigation';
 	import ProjectArrowsDetail from '$lib/components/ProjectArrowsDetail.svelte';
-	export let data: ProjectData;
-	const { project } = data;
-	import { onMount } from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
 	import { animate } from 'motion';
 	import { isTransitioning } from '$lib/stores/transition';
-	import { goto } from '$app/navigation';
-	const currentIndex = projects.findIndex((p) => p.id === project.id);
 
-	const nextProject = projects[(currentIndex + 1) % projects.length];
+	export let data: ProjectData;
+	$: ({ project } = data);
+	$: currentIndex = projects.findIndex((p) => p.id === project.id);
+	$: nextProject = projects[(currentIndex + 1) % projects.length];
+
+	async function handleNextProject(event: Event) {
+		event.preventDefault();
+		$isTransitioning = true;
+
+		try {
+			await Promise.all([
+				animate('article', { opacity: [1, 0] }, { duration: 0.3 }).finished,
+				goto(`/projects/${nextProject.id}`, {
+					replaceState: false,
+					keepfocus: true
+				})
+			]);
+		} finally {
+			$isTransitioning = false;
+		}
+	}
+	afterNavigate(() => {
+		window.scrollTo({ top: 0, behavior: 'instant' });
+	});
+
+	afterUpdate(() => {
+		// Reset animations after navigation
+		animate('article', { opacity: [0, 1] }, { duration: 0.3 });
+	});
 
 	onMount(() => {
 		animate(
@@ -27,25 +54,6 @@
 			y: [30, 0]
 		});
 	});
-
-	async function handleNextProject(projectId: string, e: MouseEvent) {
-		e.preventDefault();
-		isTransitioning.set(true);
-
-		// Exit animations
-		await animate('article', { backgroundColor: ['#1a1a1a', '#fff'] }, { duration: 0.3 });
-
-		await animate(
-			'.next-title, .project-info, .media-grid, .description',
-			{
-				opacity: [1, 0],
-				y: [0, -30]
-			},
-			{ duration: 0.6 }
-		);
-
-		goto(`/projects/${projectId}`);
-	}
 </script>
 
 <ProjectArrowsDetail />
@@ -89,7 +97,7 @@
 					<img src={item.url} alt={item.alt} />
 				{:else if item.type === 'video'}
 					<video src={item.url} controls>
-						<track kind="captions" src={item.captions} srclang="en" label="English" />
+						<track kind="captions" srclang="en" label="English" />
 					</video>
 				{/if}
 			{/each}
@@ -97,7 +105,7 @@
 	{/if}
 
 	<div class="description">
-		<p class="intro">{project.copy.intro}</p>
+		<h3 class="intro">{project.copy.intro}</h3>
 
 		{#each project.copy.sections as section}
 			<div class="section">
@@ -114,13 +122,14 @@
 		{/each}
 
 		<p class="conclusion">{project.copy.conclusion}</p>
+		<p class="conclusion">{project.copy.conclusion}</p>
 	</div>
 
 	<footer class="next-project">
 		<a
 			href="/projects/{nextProject.id}"
+			on:click|preventDefault={handleNextProject}
 			class="next-project-link"
-			on:click={(e) => handleNextProject(nextProject.id, e)}
 		>
 			<span class="next-label">Next Project</span>
 			<h2 class="next-title">{nextProject.name}</h2>
@@ -132,25 +141,26 @@
 	article {
 		padding: 25px;
 		min-height: 100vh;
-		background-color: #1a1a1a;
+		background-color: #111111;
 		transition: background-color 0.8s ease-in-out;
 	}
 
 	.description {
-		font-family: Helvetica, sans-serif;
-		font-size: 1.5rem;
-		font-weight: normal;
-		line-height: 1.1;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 1rem;
+		font-weight: 300;
+		line-height: 1.2;
 		text-align: left;
 		letter-spacing: -0.015em;
-		width: 100%;
-		max-width: 800px;
-		margin: 0 auto;
+		padding: 10px;
+		display: grid;
+		gap: 2rem;
+		grid-template-columns: 1fr 1fr 1fr;
 	}
 
 	@media (max-width: 768px) {
 		.description {
-			width: 90vw;
+			grid-template-columns: 1fr;
 		}
 	}
 
@@ -177,10 +187,11 @@
 		color: white;
 	}
 
-	.section h3 {
+	.section h3,
+	h3 {
 		font-size: 1.5rem;
-		line-height: 1.1;
-		margin-bottom: 1rem;
+		line-height: 1.2;
+		margin-bottom: 0.4rem;
 		letter-spacing: -0.02em;
 		font-weight: 400;
 		color: white;
@@ -191,8 +202,21 @@
 		color: white;
 	}
 
+	.section li::marker {
+		content: '— ';
+		color: white;
+		font-size: 1rem;
+		font-family: var(--font-mono);
+	}
+
 	.conclusion {
 		margin-top: 4rem;
+		border-top: 1px solid white;
+		padding-top: 0.5rem;
+		font-size: 10px;
+		line-height: 1.5;
+		font-family: var(--font-mono);
+		text-align: left;
 	}
 
 	.nav-link {

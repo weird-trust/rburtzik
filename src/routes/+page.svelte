@@ -256,11 +256,12 @@
 		top: 0.8rem;
 		text-decoration: none;
 		font-size: 10px;
-		color: #333;
+		color: #111111;
 	}
 
 	.about {
 		right: 2rem;
 		bottom: 0.8rem;
+		z-index: 10000;
 	}
 </style>

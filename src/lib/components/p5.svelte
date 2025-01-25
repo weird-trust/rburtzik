@@ -14,7 +14,7 @@
 			grid[i] = [];
 			rotations[i] = [];
 			for (let j = 0; j < cols; j++) {
-				grid[i][j] = Math.random() < 0.9 ? '/' : '';
+				grid[i][j] = Math.random() < 0.1 ? '/' : '';
 				rotations[i][j] = 0;
 			}
 		}
@@ -103,7 +103,7 @@
 		display: inline-block;
 		width: 100%;
 		max-width: 100%;
-		color: #333;
+		color: #333333;
 		font-family: var(--font-mono);
 		line-height: 1;
 
@@ -120,11 +120,11 @@
 	.ascii-row span {
 		/* border: 0.1px solid black; */
 		display: inline-block;
-		width: 0.5rem;
-		height: 0.5rem;
+		width: 0.8rem;
+		height: 0.8rem;
 		text-align: center;
 		transition: transform 0.3s ease;
-		font-size: 10px;
+		font-size: 0.7rem;
 		transform-origin: center center;
 		will-change: transform;
 	}
