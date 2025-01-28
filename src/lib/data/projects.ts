@@ -124,7 +124,7 @@ export const projects: Project[] = [
         {
             id: 'internet-changed-my-life',
             name: 'Internet Changed My Life',
-            url: 'https://internetchangedmylife.de',
+            url: 'https://www.internetchangedmy.life/',
             description: 'Interactive documentary platform about internet influence',
             year: 2023,
             type: 'Interactive Documentary',

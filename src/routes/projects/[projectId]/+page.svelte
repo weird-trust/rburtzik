@@ -1,45 +1,36 @@
 <script lang="ts">
 	import type { ProjectData } from '$lib/types';
-	import { projects } from '$lib/data/projects';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import { afterNavigate } from '$app/navigation';
-	import ProjectArrowsDetail from '$lib/components/ProjectArrowsDetail.svelte';
 	import { onMount, afterUpdate } from 'svelte';
 	import { animate } from 'motion';
+	import { projects } from '$lib/data/projects';
 	import { isTransitioning } from '$lib/stores/transition';
+	import { screenshotConfig } from '$lib/config/screenshot';
+	import ProjectArrowsDetail from '$lib/components/ProjectArrowsDetail.svelte';
+	import { goto } from '$app/navigation';
+	import { afterNavigate } from '$app/navigation';
+
+	let showIframe = false;
+	let isMobile = false;
+	let viewportWidth: number;
 
 	export let data: ProjectData;
 	$: ({ project } = data);
 	$: currentIndex = projects.findIndex((p) => p.id === project.id);
 	$: nextProject = projects[(currentIndex + 1) % projects.length];
 
-	async function handleNextProject(event: Event) {
-		event.preventDefault();
-		$isTransitioning = true;
-
-		try {
-			await Promise.all([
-				animate('article', { opacity: [1, 0] }, { duration: 0.3 }).finished,
-				goto(`/projects/${nextProject.id}`, {
-					replaceState: false,
-					keepfocus: true
-				})
-			]);
-		} finally {
-			$isTransitioning = false;
-		}
-	}
-	afterNavigate(() => {
-		window.scrollTo({ top: 0, behavior: 'instant' });
-	});
-
-	afterUpdate(() => {
-		// Reset animations after navigation
-		animate('article', { opacity: [0, 1] }, { duration: 0.3 });
-	});
+	$: screenshotDimension = isMobile
+		? screenshotConfig.dimensions.mobile
+		: screenshotConfig.dimensions.desktop;
 
 	onMount(() => {
+		const checkViewport = () => {
+			viewportWidth = window.innerWidth;
+			isMobile = viewportWidth < 768;
+		};
+
+		checkViewport();
+		window.addEventListener('resize', checkViewport);
+
 		animate(
 			'h1',
 			{
@@ -53,6 +44,41 @@
 			opacity: [0, 1],
 			y: [30, 0]
 		});
+
+		return () => window.removeEventListener('resize', checkViewport);
+	});
+
+	async function handleNextProject(event: Event) {
+		event.preventDefault();
+		$isTransitioning = true;
+		showIframe = false;
+
+		await new Promise((resolve) => setTimeout(resolve, 50));
+
+		try {
+			await Promise.all([
+				animate('article', { opacity: [1, 0] }, { duration: 0.3 }).finished,
+				goto(`/projects/${nextProject.id}`, {
+					replaceState: false,
+					keepfocus: true
+				})
+			]);
+		} finally {
+			$isTransitioning = false;
+		}
+	}
+
+	$: if ($isTransitioning) {
+		showIframe = false;
+	}
+
+	afterNavigate(() => {
+		window.scrollTo({ top: 0, behavior: 'instant' });
+		showIframe = false; // Reset iframe state after navigation
+	});
+
+	afterUpdate(() => {
+		animate('article', { opacity: [0, 1] }, { duration: 0.3 });
 	});
 </script>
 
@@ -90,7 +116,7 @@
 		</div>
 	</div>
 	<!-- Media Section -->
-	{#if project.media}
+	{#if project.media && project.media.length > 0}
 		<div class="media-grid">
 			{#each project.media as item}
 				{#if item.type === 'image'}
@@ -101,6 +127,64 @@
 					</video>
 				{/if}
 			{/each}
+		</div>
+	{:else}
+		<div class="website-preview">
+			{#if !showIframe}
+				<div class="browser-header">
+					<div class="browser-buttons">
+						<span></span>
+						<span></span>
+						<span></span>
+					</div>
+					<div class="browser-address-bar">
+						<span>{project.url}</span>
+					</div>
+				</div>
+				<button
+					class="preview-button"
+					on:click={() => (showIframe = true)}
+					aria-label="Load website preview"
+				>
+					<img
+						src={`https://api.screenshotmachine.com?key=${screenshotConfig.apiKey}&url=${encodeURIComponent(project.url)}&dimension=${screenshotDimension}&device=${isMobile ? 'phone' : 'desktop'}`}
+						alt={`Preview of ${project.name} website`}
+					/>
+					<div class="preview-overlay">
+						<span>Click to load website preview</span>
+					</div>
+				</button>
+			{:else}
+				<div class="browser-header">
+					<div class="browser-buttons">
+						<span></span>
+						<span></span>
+						<span class="close-btn" on:click={() => (showIframe = false)}></span>
+					</div>
+					<div class="browser-address-bar">
+						<span>{project.url}</span>
+					</div>
+				</div>
+				{#if !$isTransitioning && showIframe}
+					<div class="iframe-container">
+						<iframe
+							title={project.name}
+							src={project.url}
+							frameborder="0"
+							loading="lazy"
+							style="width: {isMobile ? '390px' : '100%'}; margin: 0 auto;"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						></iframe>
+						<button
+							class="close-iframe"
+							on:click={() => (showIframe = false)}
+							aria-label="Close preview"
+						>
+							✕
+						</button>
+					</div>
+				{/if}
+			{/if}
 		</div>
 	{/if}
 
@@ -138,6 +222,136 @@
 </article>
 
 <style>
+	.browser-window {
+		border-radius: 8px;
+		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+		overflow: hidden;
+		background: #fff;
+	}
+
+	.browser-header {
+		background: rgb(39, 52, 39);
+		padding: 12px 16px;
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+
+	.browser-buttons {
+		display: flex;
+		gap: 8px;
+	}
+
+	.browser-buttons span {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: #ff5f56;
+	}
+
+	.browser-buttons span:nth-child(2) {
+		background: #ffbd2e;
+	}
+
+	.browser-buttons span:nth-child(3) {
+		background: #27c93f;
+	}
+
+	.browser-address-bar {
+		flex: 1;
+		background: #fff;
+		border-radius: 4px;
+		padding: 4px 12px;
+		font-size: 13px;
+		color: #666;
+		font-family: var(--font-mono);
+	}
+
+	.website-preview {
+		position: relative;
+		width: 100%;
+		background: #f5f5f5;
+		border-radius: 4px;
+		overflow: hidden;
+	}
+
+	.preview-button {
+		width: 100%;
+		padding: 0;
+		border: none;
+		background: none;
+		cursor: pointer;
+	}
+
+	.preview-button img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	.preview-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.5);
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		transition: opacity 0.3s;
+	}
+
+	.preview-button:hover .preview-overlay {
+		opacity: 1;
+	}
+
+	.iframe-container {
+		position: relative;
+		border-radius: 0 0 8px 8px;
+		padding-top: 56.25%; /* 16:9 for desktop */
+	}
+
+	@media (max-width: 768px) {
+		.iframe-container {
+			padding-top: 216.4%; /* Mobile aspect ratio (844/390 = 2.164) */
+			max-width: 390px;
+			margin: 0 auto;
+		}
+	}
+
+	.iframe-container iframe {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border: none;
+	}
+
+	.close-iframe {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		background: rgba(0, 0, 0, 0.7);
+		color: white;
+		border: none;
+		border-radius: 50%;
+		width: 2rem;
+		height: 2rem;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.3s;
+	}
+
+	.close-iframe:hover {
+		background: rgba(0, 0, 0, 0.9);
+	}
+
 	article {
 		padding: 25px;
 		min-height: 100vh;
