@@ -1,6 +1,7 @@
 import type { Project } from '$lib/types';
 
 const CLOUDINARY_URL = 'https://res.cloudinary.com/dk2ozewvs/image/upload';
+const CLOUDINARY_URL_VIDEO = 'https://res.cloudinary.com/dk2ozewvs/video/upload';
 
 export const projects: Project[] = [
     {
@@ -41,14 +42,14 @@ export const projects: Project[] = [
         media: [
             {
                 type: 'image',
-                publicId: 'v1736957391/hdk-01.png',
-                url: `${CLOUDINARY_URL}/f_auto,q_auto/v1736957391/hdk-01.png`,
+                publicId: 'hdk/hkvii0ollxpa5jnmbnvd',
+                url: `${CLOUDINARY_URL}/f_auto,q_auto/v1/hdk/hkvii0ollxpa5jnmbnvd`,
                 alt: 'Haus der Kunst Website Preview'
             },
             {
                 type: 'video',
-                publicId: 'projects/haus-der-kunst/demo',
-                url: `${CLOUDINARY_URL}/videos/projects/haus-der-kunst/demo`
+                publicId: 'hdk/e8hwxwh34horkxnyl0jc',
+                url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/hdk/e8hwxwh34horkxnyl0jc`,
             }
         ]
     },    
@@ -96,8 +97,8 @@ export const projects: Project[] = [
                 },
                 {
                     type: 'video',
-                    publicId: 'projects/haus-der-kunst/demo',
-                    url: `${CLOUDINARY_URL}/videos/projects/haus-der-kunst/demo`,
+                    publicId: 'hdk/e8hwxwh34horkxnyl0jc',
+                    url: `${CLOUDINARY_URL}/video/upload/f_auto:video,q_auto/v1/hdk/e8hwxwh34horkxnyl0jc`,
                 }
             ]
         },
@@ -119,7 +120,14 @@ export const projects: Project[] = [
                 sections: [],
                 conclusion: ''
             },
-            media: []
+            media: [
+                {
+                    type: 'image',
+                    publicId: 'shoah-memorial/eqag2ffiu9a7aszilhys',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial/eqag2ffiu9a7aszilhys`,
+                    alt: 'Haus der Kunst Website Preview'
+                },
+            ]
         },
         {
             id: 'internet-changed-my-life',
@@ -139,7 +147,14 @@ export const projects: Project[] = [
                 sections: [],
                 conclusion: ''
             },
-            media: []
+            media: [
+                {
+                    type: 'image',
+                    publicId: 'internetchangedmylife/ccda4ngizcgyufptbxcy',
+                    url: `${CLOUDINARY_URL}/t_standard_transform/internetchangedmylife/ccda4ngizcgyufptbxcy`,
+                    alt: 'Internet Changed My Life Website Preview'
+                },
+            ]
         },
         {
             id: 'futurium-audioguide',
@@ -179,7 +194,14 @@ export const projects: Project[] = [
                 sections: [],
                 conclusion: ''
             },
-            media: []
+            media: [
+                {
+                    type: 'image',
+                    publicId: 'kampnagel/yduojbihike5gymbwlsi',
+                    url: `${CLOUDINARY_URL}/f_webp/q_auto:best/dpr_auto/kampnagel/yduojbihike5gymbwlsi`,
+                    alt: 'Kampnagel Website Preview'
+                },
+            ]
         },
         {
             id: 'magenta-musik',
