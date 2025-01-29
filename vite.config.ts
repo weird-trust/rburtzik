@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
     ],
     define: {
       'process.env.VITE_CLOUDINARY_CLOUD_NAME': JSON.stringify(env.VITE_CLOUDINARY_CLOUD_NAME),
-      'process.env.VITE_CLOUDINARY_URL': JSON.stringify(env.VITE_CLOUDINARY_URL)
+      'process.env.VITE_CLOUDINARY_CONFIG.baseUrl': JSON.stringify(env.VITE_CLOUDINARY_CONFIG.baseUrl)
     }
   }
 });

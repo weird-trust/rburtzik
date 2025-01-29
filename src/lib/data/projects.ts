@@ -42,16 +42,23 @@ export const projects: Project[] = [
         media: [
             {
                 type: 'image',
-                publicId: 'hdk/hkvii0ollxpa5jnmbnvd',
-                url: `${CLOUDINARY_URL}/f_auto,q_auto/v1/hdk/hkvii0ollxpa5jnmbnvd`,
-                alt: 'Haus der Kunst Website Preview'
+                publicId: 'haus-der-kunst/vkm0zyqctjphmbt1ci5h',
+                url: `${CLOUDINARY_URL}/f_auto,q_auto:good,w_auto,dpr_auto,c_fill,g_auto/haus-der-kunst/vkm0zyqctjphmbt1ci5h`,
+                alt: 'haus-der-kunst - Add description'
+            },
+            {
+                type: 'image',
+                publicId: 'haus-der-kunst/qc3bt3vl72b4zsrjj3hz',
+                url: `${CLOUDINARY_URL}/f_auto,q_auto/haus-der-kunst/qc3bt3vl72b4zsrjj3hz`,
+                alt: 'haus-der-kunst - Add description'
             },
             {
                 type: 'video',
-                publicId: 'hdk/e8hwxwh34horkxnyl0jc',
-                url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/hdk/e8hwxwh34horkxnyl0jc`,
-            }
-        ]
+                publicId: 'haus-der-kunst/smnhjfq0krismh6kk4lr',
+                url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/haus-der-kunst/smnhjfq0krismh6kk4lr`
+        
+            },
+        ],
     },    
         { 
             id: 'hilti',
@@ -91,16 +98,23 @@ export const projects: Project[] = [
             media: [
                 {
                     type: 'image',
-                    publicId: 'cld-sample-3',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/cld-sample-3`,
-                    alt: 'Haus der Kunst Website Preview'
+                    publicId: 'hilti/xjqqlgwyfh1t0wkrscn0',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/hilti/xjqqlgwyfh1t0wkrscn0`,
+                    alt: 'hilti - Add description'
                 },
                 {
-                    type: 'video',
-                    publicId: 'hdk/e8hwxwh34horkxnyl0jc',
-                    url: `${CLOUDINARY_URL}/video/upload/f_auto:video,q_auto/v1/hdk/e8hwxwh34horkxnyl0jc`,
-                }
-            ]
+                    type: 'image',
+                    publicId: 'hilti/dmq1notqj5xu92eddkty',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/hilti/dmq1notqj5xu92eddkty`,
+                    alt: 'hilti - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'hilti/gtwtycqovnrkkqjforrl',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/hilti/gtwtycqovnrkkqjforrl`,
+                    alt: 'hilti - Add description'
+                },
+            ],
         },
         {
             id: 'shoah-memorial-frankfurt',
@@ -123,11 +137,59 @@ export const projects: Project[] = [
             media: [
                 {
                     type: 'image',
-                    publicId: 'shoah-memorial/eqag2ffiu9a7aszilhys',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial/eqag2ffiu9a7aszilhys`,
-                    alt: 'Haus der Kunst Website Preview'
+                    publicId: 'shoah-memorial-frankfurt/jvr7ppql3tunyuknx4jg',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/jvr7ppql3tunyuknx4jg`,
+                    alt: 'shoah-memorial-frankfurt - Add description'
                 },
-            ]
+                {
+                    type: 'image',
+                    publicId: 'shoah-memorial-frankfurt/bxqwzbb9znaymrcwg95z',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/bxqwzbb9znaymrcwg95z`,
+                    alt: 'shoah-memorial-frankfurt - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'shoah-memorial-frankfurt/fa3yk4hhdrsqiwhemsqb',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/fa3yk4hhdrsqiwhemsqb`,
+                    alt: 'shoah-memorial-frankfurt - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'shoah-memorial-frankfurt/c2xpwixkea0dnig6capw',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/c2xpwixkea0dnig6capw`,
+                    alt: 'shoah-memorial-frankfurt - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'shoah-memorial-frankfurt/w7twqrtjt4qnnxinju95',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/w7twqrtjt4qnnxinju95`,
+                    alt: 'shoah-memorial-frankfurt - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'shoah-memorial-frankfurt/gak41rjnocoztgt1wyjh',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/gak41rjnocoztgt1wyjh`,
+                    alt: 'shoah-memorial-frankfurt - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'shoah-memorial-frankfurt/aub9sfsli1oelktmjgpv',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/aub9sfsli1oelktmjgpv`,
+                    alt: 'shoah-memorial-frankfurt - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'shoah-memorial-frankfurt/gprl6qnfas6jdvfu89dy',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/gprl6qnfas6jdvfu89dy`,
+                    alt: 'shoah-memorial-frankfurt - Add description'
+                },
+                {
+                    type: 'video',
+                    publicId: 'shoah-memorial-frankfurt/hzj799aka8gomfgcwnkz',
+                    url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/shoah-memorial-frankfurt/hzj799aka8gomfgcwnkz`
+            
+                },
+            ],
         },
         {
             id: 'internet-changed-my-life',
@@ -150,31 +212,29 @@ export const projects: Project[] = [
             media: [
                 {
                     type: 'image',
-                    publicId: 'internetchangedmylife/ccda4ngizcgyufptbxcy',
-                    url: `${CLOUDINARY_URL}/t_standard_transform/internetchangedmylife/ccda4ngizcgyufptbxcy`,
-                    alt: 'Internet Changed My Life Website Preview'
+                    publicId: 'internet-changed-my-life/sx0zzjtagqfdfzei2x9t',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/internet-changed-my-life/sx0zzjtagqfdfzei2x9t`,
+                    alt: 'internet-changed-my-life - Add description'
                 },
-            ]
-        },
-        {
-            id: 'futurium-audioguide',
-            name: 'Futurium Audioguide',
-            url: 'https://futurium.de',
-            description: 'Digital audio guide system for Futurium Berlin',
-            year: 2023,
-            type: 'Museum',
-            work: 'Audio Guide Development',
-            client: 'Futurium',
-            credits: {
-                agency: ['Agency Name'],
-                personal: ['Robert Burtzik']
-            },
-            copy: {
-                intro: '',
-                sections: [],
-                conclusion: ''
-            },
-            media: []
+                {
+                    type: 'image',
+                    publicId: 'internet-changed-my-life/gn9nbk7ecbthcdic5xis',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/internet-changed-my-life/gn9nbk7ecbthcdic5xis`,
+                    alt: 'internet-changed-my-life - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'internet-changed-my-life/wavyhoooeqdh8gb1dsmv',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/internet-changed-my-life/wavyhoooeqdh8gb1dsmv`,
+                    alt: 'internet-changed-my-life - Add description'
+                },
+                {
+                    type: 'video',
+                    publicId: 'internet-changed-my-life/w3ptruezo0macwyok5le',
+                    url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/internet-changed-my-life/w3ptruezo0macwyok5le`
+            
+                },
+            ],
         },
         {
             id: 'kampnagel',
@@ -197,11 +257,30 @@ export const projects: Project[] = [
             media: [
                 {
                     type: 'image',
-                    publicId: 'kampnagel/yduojbihike5gymbwlsi',
-                    url: `${CLOUDINARY_URL}/f_webp/q_auto:best/dpr_auto/kampnagel/yduojbihike5gymbwlsi`,
-                    alt: 'Kampnagel Website Preview'
+                    publicId: 'kampnagel/bfx2boknvzd6o8b5okl9',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/kampnagel/bfx2boknvzd6o8b5okl9`,
+                    alt: 'kampnagel - Add description'
                 },
-            ]
+                {
+                    type: 'image',
+                    publicId: 'kampnagel/kmmohhjcyfdbvysae6px',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/kampnagel/kmmohhjcyfdbvysae6px`,
+                    alt: 'kampnagel - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'kampnagel/jmjbcrjmhfeog024plgx',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/kampnagel/jmjbcrjmhfeog024plgx`,
+                    alt: 'kampnagel - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'kampnagel/pwy5vaxox3cpnv2lcx4y',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/kampnagel/pwy5vaxox3cpnv2lcx4y`,
+                    alt: 'kampnagel - Add description'
+                },
+            ],
+            
         },
         {
             id: 'magenta-musik',
@@ -221,27 +300,38 @@ export const projects: Project[] = [
                 sections: [],
                 conclusion: ''
             },
-            media: []
-        },
-        {
-            id: 'vw-id3-training',
-            name: 'Volkswagen ID3 Training Platform',
-            url: 'https://id3-training.volkswagen.de',
-            description: 'Digital training platform for VW ID.3',
-            year: 2023,
-            type: 'E-Learning',
-            work: 'Training Platform Development',
-            client: 'Volkswagen',
-            credits: {
-                agency: ['Agency Name'],
-                personal: ['Robert Burtzik']
-            },
-            copy: {
-                intro: '',
-                sections: [],
-                conclusion: ''
-            },
-            media: []
+            media: [
+                {
+                    type: 'image',
+                    publicId: 'magenta-musik/lylbvo6piji6e8ubunt0',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/magenta-musik/lylbvo6piji6e8ubunt0`,
+                    alt: 'magenta-musik - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'magenta-musik/r5cdwakavxrddjzfui5r',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/magenta-musik/r5cdwakavxrddjzfui5r`,
+                    alt: 'magenta-musik - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'magenta-musik/vhj1s1x8gin4etzmzsiw',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/magenta-musik/vhj1s1x8gin4etzmzsiw`,
+                    alt: 'magenta-musik - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'magenta-musik/vzbtrudbeaflbg5jbfut',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/magenta-musik/vzbtrudbeaflbg5jbfut`,
+                    alt: 'magenta-musik - Add description'
+                },
+                {
+                    type: 'video',
+                    publicId: 'magenta-musik/nitgjvbovncnhjrhst1m',
+                    url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/magenta-musik/nitgjvbovncnhjrhst1m`
+            
+                },
+            ],
         },
         {
             id: 'design-hfbk',
@@ -261,7 +351,44 @@ export const projects: Project[] = [
                 sections: [],
                 conclusion: ''
             },
-            media: []
+            media: [
+                {
+                    type: 'image',
+                    publicId: 'design-hfbk/vxldea9na9rau278amvf',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/vxldea9na9rau278amvf`,
+                    alt: 'design-hfbk - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'design-hfbk/zdolqy5bzbl9hw8wydyp',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/zdolqy5bzbl9hw8wydyp`,
+                    alt: 'design-hfbk - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'design-hfbk/bbji4xqcia9krfxqaoy0',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/bbji4xqcia9krfxqaoy0`,
+                    alt: 'design-hfbk - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'design-hfbk/sd88ypwugtd7o86gop2o',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/sd88ypwugtd7o86gop2o`,
+                    alt: 'design-hfbk - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'design-hfbk/cw29pqip8zulpat5za7b',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/cw29pqip8zulpat5za7b`,
+                    alt: 'design-hfbk - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'design-hfbk/yv1ptujfbga62lr81slv',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/yv1ptujfbga62lr81slv`,
+                    alt: 'design-hfbk - Add description'
+                },
+            ],
         },
         {
             id: 'umlaut',
@@ -281,6 +408,70 @@ export const projects: Project[] = [
                 sections: [],
                 conclusion: ''
             },
-            media: []
+            media: [
+                {
+                    type: 'image',
+                    publicId: 'umlaut/e7wttrxi948yupa0tfdi',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/umlaut/e7wttrxi948yupa0tfdi`,
+                    alt: 'umlaut - Add description'
+                },
+            ],
+        },
+        {
+            id: 'scamming-interfaces',
+            name: 'Scamming Interfaces',
+            url: 'https://scamminginterfaces.com',
+            description: 'Thesis',
+            year: 2017,
+            type: 'ART',
+            work: 'Website Development',
+            client: 'ME',
+            credits: {
+                agency: ['HFBK Hamburg'],
+                personal: ['Robert Burtzik']
+            },
+            copy: {
+                intro: '',
+                sections: [],
+                conclusion: ''
+            },
+            media: [
+                {
+                    type: 'image',
+                    publicId: 'scamming-interfaces/tjab0jqtf4n3unvbqmvf',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/scamming-interfaces/tjab0jqtf4n3unvbqmvf`,
+                    alt: 'scamming-interfaces - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'scamming-interfaces/skgr1qf3m76ubybl39vk',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/scamming-interfaces/skgr1qf3m76ubybl39vk`,
+                    alt: 'scamming-interfaces - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'scamming-interfaces/cmfywhcjjheubmbgzrkg',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/scamming-interfaces/cmfywhcjjheubmbgzrkg`,
+                    alt: 'scamming-interfaces - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'scamming-interfaces/wo7yecfwakghxzewxzkf',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/scamming-interfaces/wo7yecfwakghxzewxzkf`,
+                    alt: 'scamming-interfaces - Add description'
+                },
+                {
+                    type: 'image',
+                    publicId: 'scamming-interfaces/jjfxk3xssjdy2hqmhdcc',
+                    url: `${CLOUDINARY_URL}/f_auto,q_auto/scamming-interfaces/jjfxk3xssjdy2hqmhdcc`,
+                    alt: 'scamming-interfaces - Add description'
+                },
+                {
+                    type: 'video',
+                    publicId: 'scamming-interfaces/xdqvpob5femud4nidn8i',
+                    url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/scamming-interfaces/xdqvpob5femud4nidn8i`
+            
+                },
+            ],
         }
 ];
