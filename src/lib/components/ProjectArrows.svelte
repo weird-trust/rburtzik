@@ -6,7 +6,7 @@
 	import { onMount } from 'svelte';
 	import { isTransitioning } from '$lib/stores/transition';
 	import { goto } from '$app/navigation';
-
+	import { getImageTransform } from '$lib/utils/cloudinaryTransforms';
 	let loaded = false;
 
 	$: if (browser) {
@@ -74,9 +74,9 @@
 								{arrow}
 								{#if colIndex !== COLS - 1}
 									<div class="hover-content">
-										<span class="project-name">{project.name}</span>
-										<span class="project-type">{project.type}</span>
-										<span class="project-desc">{project.year}</span>
+										<span class="project-name">{project.work}</span>
+										<span class="project-type">for {project.credits.agency}</span>
+										<span class="project-desc"> in {project.year}</span>
 									</div>
 								{/if}
 							</span>
@@ -105,8 +105,10 @@
 							<CldImage
 								src={project.media[0].publicId}
 								alt={project.media[0].alt || project.name}
-								width={960}
-								height={600}
+								{...getImageTransform(project.media[0].publicId)}
+								format="auto"
+								quality="auto"
+								fetchFormat="auto"
 								loading="lazy"
 								on:load={() => console.log('Image loaded')}
 								on:error={(e) => console.error('Image error:', e)}
@@ -199,7 +201,7 @@
 	.hover-media video {
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
+		object-fit: contain;
 		backface-visibility: hidden;
 	}
 

@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 
 	let grid: string[][] = [];
-	const rows: number = 20;
-	const cols: number = 20;
+	const rows: number = 50;
+	const cols: number = 50;
 	let rotations: number[][] = [];
 	let animationFrame: number;
 	let time: number = 0;
