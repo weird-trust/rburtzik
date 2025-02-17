@@ -206,7 +206,6 @@
 		{/each}
 
 		<p class="conclusion">{project.copy.conclusion}</p>
-		<p class="conclusion">{project.copy.conclusion}</p>
 	</div>
 
 	<footer class="next-project">

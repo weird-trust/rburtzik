@@ -106,7 +106,9 @@
 								src={project.media[0].publicId}
 								alt={project.media[0].alt || project.name}
 								{...getImageTransform(project.media[0].publicId)}
+								crop="scale"
 								format="auto"
+								aspectRatio="16:9"
 								quality="auto"
 								fetchFormat="auto"
 								loading="lazy"
@@ -138,7 +140,7 @@
 		transition: background-color 0.4s ease-in-out;
 	}
 	div.projects {
-		height: 100vh;
+		min-height: 100vh;
 		width: 100vw;
 		/* overflow-y: auto;
 		overflow-x: hidden; */
@@ -186,6 +188,8 @@
 
 	.hover-media {
 		position: fixed;
+		max-width: 80vw;
+		max-height: 80vh;
 		top: 50%;
 		left: 50%;
 		z-index: 1;
@@ -199,8 +203,10 @@
 
 	.hover-media img,
 	.hover-media video {
-		width: 100%;
-		height: 100%;
+		width: auto;
+		height: auto;
+		max-width: 100%;
+		max-height: 100%;
 		object-fit: contain;
 		backface-visibility: hidden;
 	}

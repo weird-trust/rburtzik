@@ -1,6 +1,8 @@
 <script lang="ts">
+	import Footer from '$lib/components/Footer.svelte';
 	import P5 from '$lib/components/p5.svelte';
 	import ProjectArrows from '$lib/components/ProjectArrows.svelte';
+	import MouseAnimation from '$lib/components/MouseAnimation.svelte';
 	import { onMount } from 'svelte';
 
 	let onlineTimes = 'Mo - So: 14:00 - 00:00';
@@ -73,15 +75,15 @@
 	on:mouseleave={handleMouseLeave}
 	on:mouseenter={(e) => handleMouseEnter(e, 'home')}
 >
-	<!-- <a href="/" class="nav-link home">Robert Burtzik</a> -->
 	<a href="/about" class="nav-link about">Imprint</a>
 	<div class="clock nav-link">
 		{timeObj.hours}<span class="blink">:</span>{timeObj.minutes}<span class="blink">:</span
 		>{timeObj.seconds}
 	</div>
 	<div class="p5-wrapper">
-		<P5 />
+		<!-- <P5 /> -->
 	</div>
+	<MouseAnimation />
 	<div>
 		<p class="intro">
 			Robert Burtzik is a designer and developer based in Hamburg. He is interested in the
@@ -117,6 +119,7 @@
 	</button>
 </main>
 <ProjectArrows />
+<Footer />
 
 <style>
 	main {

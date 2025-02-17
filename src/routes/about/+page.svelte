@@ -1,20 +1,13 @@
 <script lang="ts">
+	import Footer from '$lib/components/Footer.svelte';
+	import MouseAnimation from '$lib/components/MouseAnimation.svelte';
 	import { onMount } from 'svelte';
-	let email: string;
 	const ROWS = 4;
 	const COLS = 4;
 	const rows = Array(ROWS).fill(null);
 	const cols = Array(COLS).fill('/');
 
-	function decodeEmail(encoded: string): string {
-		return encoded.replace(/[a-zA-Z]/g, function (c) {
-			return String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
-		});
-	}
-
-	onMount((): void => {
-		email = decodeEmail('eboregohegmvx@tznvy.pbz');
-	});
+	onMount((): void => {});
 </script>
 
 <main>
@@ -31,41 +24,23 @@
 			{/each}
 		</div>
 	</section>
-	<nav>
-		<footer>
-			<p>This place is built with svelte, vite and typescript and is running on vercel.</p>
-			<p>It was last updated on 16/02/2025</p>
-			<a href="https://www.are.na/robert-burtzik/channels">Are.na</a>
-			<a href="https://www.instagram.com/rburtzik">Instagram</a>
-			<a href="mailto:{email}">Mail</a>
-			<a href="https://cv.robertburtzik.com">CV</a>
-			<p>© 2025 Robert Burtzik. All rights reserved.</p>
-		</footer>
-	</nav>
 </main>
+<div class="footer-container">
+	<Footer />
+</div>
+<MouseAnimation />
 
 <style>
-	p {
-		margin: 0 0 20px 0;
-	}
-
-	nav {
-		bottom: 2rem;
+	.footer-container {
+		margin-top: 3rem;
+		position: fixed;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
 		max-width: 800px;
+		z-index: 2;
 	}
-
-	nav a {
-		display: inline-block;
-		text-underline-offset: 0.2em;
-		color: #000;
-		padding-top: 1rem;
-		padding-bottom: 1rem;
-	}
-
-	nav a:hover {
-		color: blue;
-	}
-
 	main {
 		padding: 40px;
 		max-width: 800px;
@@ -76,32 +51,6 @@
 		main {
 			padding: 25px;
 		}
-	}
-
-	footer {
-		position: absolute;
-		border: 1px double #000;
-		padding: 1rem 2rem 0 2rem;
-		font-size: 12px;
-		width: 24vw;
-		transform: translate(-50%, -50%);
-		bottom: 0;
-		left: 50%;
-	}
-	@media (max-width: 768px) {
-		footer {
-			width: 70vw;
-		}
-	}
-
-	a {
-		color: #000;
-		text-decoration: none;
-		text-underline-offset: 0.2em;
-	}
-
-	a:hover {
-		color: blue;
 	}
 
 	.arrows-background {
