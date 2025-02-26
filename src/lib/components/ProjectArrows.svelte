@@ -21,6 +21,37 @@
 	let mouseX = 0;
 	let mouseY = 0;
 	let hoveredMedia: HTMLElement | null = null;
+	let projectIntersections: Record<string, boolean> = {};
+	let isMobile = false;
+
+	onMount(() => {
+		// Check if device is mobile (no hover capability)
+		isMobile = window.matchMedia('(hover: none)').matches;
+
+		// Set up intersection observers for mobile view
+		if (isMobile) {
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						const projectId = entry.target.getAttribute('data-project-id');
+						if (projectId) {
+							projectIntersections[projectId] = entry.isIntersecting;
+							projectIntersections = { ...projectIntersections };
+						}
+					});
+				},
+				{
+					threshold: 0.5, // Trigger when 30% visible (earlier appearance)
+					rootMargin: '0px 0px -10% 0px' // Negative bottom margin means it will trigger slightly before element leaves viewport
+				}
+			);
+
+			// Observe all project sections
+			document.querySelectorAll('.project-section').forEach((section) => {
+				observer.observe(section);
+			});
+		}
+	});
 
 	function handleMouseMove(event: MouseEvent) {
 		if (!hoveredMedia) return;
@@ -93,6 +124,7 @@
 				{#if project.media?.[0]}
 					<div
 						class="hover-media"
+						class:visible={isMobile && projectIntersections[project.id]}
 						role="img"
 						on:mouseenter={handleMouseEnter}
 						on:mouseleave={handleMouseLeave}
@@ -143,7 +175,7 @@
 		min-height: 100vh;
 		width: 100vw;
 		/* overflow-y: auto;
-		overflow-x: hidden; */
+        overflow-x: hidden; */
 	}
 
 	.project-section {
@@ -195,7 +227,7 @@
 		z-index: 1;
 		opacity: 0;
 		pointer-events: none;
-		transition: all 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+		transition: all 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
 		mix-blend-mode: difference;
 		transform-style: preserve-3d;
 		will-change: transform;
@@ -212,6 +244,12 @@
 	}
 
 	.project-title:hover .hover-media {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	/* Show media when in mobile viewport */
+	.hover-media.visible {
 		opacity: 1;
 		pointer-events: auto;
 	}
@@ -259,5 +297,22 @@
 
 	.project-section:has(.project-title:hover) .arrow:not(.last-column) .hover-content {
 		opacity: 1;
+	}
+
+	/* Media query for mobile devices */
+	@media (hover: none) {
+		.project-section:has(.visible) .arrow {
+			opacity: 1;
+		}
+
+		.project-section:has(.visible) .arrow:not(.last-column) .hover-content {
+			opacity: 1;
+		}
+
+		.hover-media.visible {
+			max-width: 90vw; /* Make images larger on mobile */
+			max-height: 90vh;
+			transition: all 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+		}
 	}
 </style>

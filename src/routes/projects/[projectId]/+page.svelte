@@ -1,88 +1,210 @@
 <script lang="ts">
 	import type { ProjectData } from '$lib/types';
-	import { onMount, afterUpdate } from 'svelte';
-	import { animate } from 'motion';
+	import { onMount, onDestroy } from 'svelte';
 	import { projects } from '$lib/data/projects';
 	import { isTransitioning } from '$lib/stores/transition';
 	import { screenshotConfig } from '$lib/config/screenshot';
 	import ProjectArrowsDetail from '$lib/components/ProjectArrowsDetail.svelte';
 	import { goto } from '$app/navigation';
 	import { afterNavigate } from '$app/navigation';
+	import { CldImage, CldVideoPlayer } from 'svelte-cloudinary';
+	import { getImageTransform, getVideoTransform } from '$lib/utils/cloudinaryTransforms';
+	import { tick } from 'svelte';
 
+	// State
 	let showIframe = false;
 	let isMobile = false;
 	let viewportWidth: number;
+	let mounted = false;
+	let articleElement: HTMLElement | null = null;
 
+	// Props
 	export let data: ProjectData;
 	$: ({ project } = data);
 	$: currentIndex = projects.findIndex((p) => p.id === project.id);
 	$: nextProject = projects[(currentIndex + 1) % projects.length];
-
 	$: screenshotDimension = isMobile
 		? screenshotConfig.dimensions.mobile
 		: screenshotConfig.dimensions.desktop;
 
-	onMount(() => {
-		const checkViewport = () => {
-			viewportWidth = window.innerWidth;
-			isMobile = viewportWidth < 768;
-		};
+	// Animation timing constants
+	const FADE_DURATION = 300; // ms
+	const INITIAL_ANIMATION_DELAY = 100; // ms
 
-		checkViewport();
-		window.addEventListener('resize', checkViewport);
-
-		animate(
-			'h1',
-			{
-				opacity: [0, 1],
-				y: [50, 0]
-			},
-			{ duration: 0.3, delay: 0.3 }
-		);
-
-		animate('.project-info, .media-grid, .description', {
-			opacity: [0, 1],
-			y: [30, 0]
-		});
-
-		return () => window.removeEventListener('resize', checkViewport);
+	let isTransitioning_unsubscribe = isTransitioning.subscribe((value) => {
+		// Deaktiviere jegliche Interaktion während des Übergangs
+		if (value && articleElement) {
+			articleElement.style.pointerEvents = 'none';
+		} else if (articleElement) {
+			articleElement.style.pointerEvents = 'auto';
+		}
 	});
 
-	async function handleNextProject(event: Event) {
-		event.preventDefault();
-		$isTransitioning = true;
-		showIframe = false;
+	async function applyInitialAnimations() {
+		if (!mounted) return;
 
-		await new Promise((resolve) => setTimeout(resolve, 50));
+		await tick(); // Warten auf DOM-Update
 
-		try {
-			await Promise.all([
-				animate('article', { opacity: [1, 0] }, { duration: 0.3 }).finished,
-				goto(`/projects/${nextProject.id}`, {
-					replaceState: false,
-					keepfocus: true
-				})
-			]);
-		} finally {
-			$isTransitioning = false;
+		// Use optional chaining and check for element existence
+		// Animate title
+		const titleEl = document.querySelector('h1');
+		if (titleEl instanceof HTMLElement) {
+			titleEl.style.opacity = '1';
+			titleEl.style.transform = 'translateY(0)';
+			titleEl.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+		}
+
+		// Animate content elements safely
+		const contentEls = document.querySelectorAll('.project-info, .media-grid, .description');
+		contentEls.forEach((el) => {
+			if (el instanceof HTMLElement) {
+				el.style.opacity = '1';
+				el.style.transform = 'translateY(0)';
+				el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+			}
+		});
+	}
+
+	function updateViewportSize() {
+		if (!mounted) return;
+		viewportWidth = window.innerWidth;
+		isMobile = viewportWidth < 768;
+	}
+
+	onMount(async () => {
+		mounted = true;
+		updateViewportSize();
+
+		await tick(); // Warten bis DOM bereit ist
+
+		// Cache article element reference
+		articleElement = document.querySelector('article');
+
+		// Initial animations mit einem Delay für DOM-Bereitschaft
+		const animationTimer = setTimeout(applyInitialAnimations, INITIAL_ANIMATION_DELAY);
+
+		// Add resize listener
+		window.addEventListener('resize', updateViewportSize);
+
+		return () => {
+			mounted = false;
+			clearTimeout(animationTimer);
+			window.removeEventListener('resize', updateViewportSize);
+			isTransitioning_unsubscribe();
+		};
+	});
+
+	// Neue sichere Methode zum Faden des Artikels
+	function safelyFadeArticle(opacity: '0' | '1') {
+		if (!mounted) return;
+
+		// Versuche den Artikel zu finden, falls er noch nicht gecached wurde
+		if (!articleElement) {
+			articleElement = document.querySelector('article');
+		}
+
+		// Nur fortfahren, wenn das Element existiert
+		if (articleElement instanceof HTMLElement) {
+			articleElement.style.opacity = opacity;
+			articleElement.style.transition = `opacity ${FADE_DURATION}ms ease`;
 		}
 	}
 
-	$: if ($isTransitioning) {
+	async function handleNextProject(event: Event) {
+		event.preventDefault();
+		console.log('Click erkannt, Transition-Status:', $isTransitioning, 'Mounted:', mounted);
+
+		if (!mounted || $isTransitioning) return;
+
+		// Set transition state
+		isTransitioning.set(true);
 		showIframe = false;
+
+		// Safely fade out
+		safelyFadeArticle('0');
+
+		// Wait briefly for visual effect then navigate
+		setTimeout(async () => {
+			try {
+				await goto(`/projects/${nextProject.id}`, {
+					replaceState: false,
+					keepfocus: true
+				});
+			} catch (error) {
+				console.warn('Navigation error:', error);
+				// Wenn Navigation fehlschlägt, Sichtbarkeit wiederherstellen
+				if (mounted) {
+					safelyFadeArticle('1');
+				}
+			} finally {
+				// Stelle sicher, dass der Transition-Status zurückgesetzt wird
+				isTransitioning.set(false);
+			}
+		}, FADE_DURATION);
 	}
 
-	afterNavigate(() => {
+	const safetyTimer = setTimeout(() => {
+		// Falls die Navigation nicht klappt, nach 3 Sekunden zurücksetzen
+		if ($isTransitioning) {
+			console.log('Fallback: Transition-Status zurückgesetzt');
+			isTransitioning.set(false);
+			if (mounted) {
+				safelyFadeArticle('1');
+			}
+		}
+	}, 3000);
+
+	afterNavigate(async () => {
+		if (!mounted) return;
+
+		// Reset transition state explicitly
+		isTransitioning.set(false);
+
+		// Reset scroll position
 		window.scrollTo({ top: 0, behavior: 'instant' });
-		showIframe = false; // Reset iframe state after navigation
+
+		// Reset iframe state
+		showIframe = false;
+
+		await tick(); // Warten auf DOM-Update
+
+		// Need to get a fresh reference after navigation
+		articleElement = document.querySelector('article');
+
+		// Fade in mit einem kurzen Delay für DOM-Bereitschaft
+		setTimeout(async () => {
+			if (!mounted) return;
+
+			safelyFadeArticle('1');
+
+			// Apply entry animations after fade-in is complete
+			setTimeout(applyInitialAnimations, FADE_DURATION);
+		}, 50);
 	});
 
-	afterUpdate(() => {
-		animate('article', { opacity: [0, 1] }, { duration: 0.3 });
+	onDestroy(() => {
+		// Stelle sicher, dass der Übergang-Status beim Verlassen zurückgesetzt wird
+		isTransitioning.set(false);
+		isTransitioning_unsubscribe();
 	});
 </script>
 
-<ProjectArrowsDetail />
+<svelte:head>
+	<!-- Priorisiere kritisches CSS -->
+	<style>
+		article {
+			opacity: 0;
+			transition:
+				opacity 0.3s ease,
+				background-color 0.8s ease-in-out;
+		}
+	</style>
+</svelte:head>
+
+{#if mounted}
+	<ProjectArrowsDetail />
+{/if}
+
 <article>
 	<!-- Header Section -->
 	<header>
@@ -120,11 +242,28 @@
 		<div class="media-grid">
 			{#each project.media as item}
 				{#if item.type === 'image'}
-					<img src={item.url} alt={item.alt} />
+					<CldImage
+						src={item.publicId}
+						alt={item.alt || project.name}
+						{...getImageTransform(item.publicId)}
+						crop="scale"
+						format="auto"
+						aspectRatio="16:9"
+						quality="80"
+						fetchFormat="auto"
+						loading="lazy"
+					/>
 				{:else if item.type === 'video'}
-					<video src={item.url} controls>
-						<track kind="captions" srclang="en" label="English" />
-					</video>
+					<CldVideoPlayer
+						src={item.publicId}
+						{...getVideoTransform(item.publicId)}
+						controls={false}
+						autoPlay={true}
+						muted
+						loop
+						playsinline
+						autoplayMode={'always'}
+					/>
 				{/if}
 			{/each}
 		</div>
@@ -143,8 +282,9 @@
 				</div>
 				<button
 					class="preview-button"
-					on:click={() => (showIframe = true)}
+					on:click={() => mounted && (showIframe = true)}
 					aria-label="Load website preview"
+					disabled={!mounted || $isTransitioning}
 				>
 					<img
 						src={`https://api.screenshotmachine.com?key=${screenshotConfig.apiKey}&url=${encodeURIComponent(project.url)}&dimension=${screenshotDimension}&device=${isMobile ? 'phone' : 'desktop'}`}
@@ -159,13 +299,13 @@
 					<div class="browser-buttons">
 						<span></span>
 						<span></span>
-						<span class="close-btn" on:click={() => (showIframe = false)}></span>
+						<span class="close-btn" on:click={() => mounted && (showIframe = false)}></span>
 					</div>
 					<div class="browser-address-bar">
 						<span>{project.url}</span>
 					</div>
 				</div>
-				{#if !$isTransitioning && showIframe}
+				{#if !$isTransitioning && showIframe && mounted}
 					<div class="iframe-container">
 						<iframe
 							title={project.name}
@@ -177,8 +317,9 @@
 						></iframe>
 						<button
 							class="close-iframe"
-							on:click={() => (showIframe = false)}
+							on:click={() => mounted && (showIframe = false)}
 							aria-label="Close preview"
+							disabled={!mounted || $isTransitioning}
 						>
 							✕
 						</button>
@@ -213,6 +354,7 @@
 			href="/projects/{nextProject.id}"
 			on:click|preventDefault={handleNextProject}
 			class="next-project-link"
+			aria-disabled={$isTransitioning || !mounted}
 		>
 			<span class="next-label">Next Project</span>
 			<h2 class="next-title">{nextProject.name}</h2>
@@ -221,6 +363,17 @@
 </article>
 
 <style>
+	article {
+		padding: 25px;
+		min-height: 100vh;
+		background-color: #111111;
+		opacity: 0; /* Start invisible for transitions */
+		transition:
+			opacity 0.3s ease,
+			background-color 0.8s ease-in-out;
+	}
+
+	/* CSS bleibt größtenteils unverändert */
 	.browser-window {
 		border-radius: 8px;
 		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
@@ -282,6 +435,10 @@
 		cursor: pointer;
 	}
 
+	.preview-button:disabled {
+		cursor: not-allowed;
+	}
+
 	.preview-button img {
 		width: 100%;
 		height: auto;
@@ -303,7 +460,7 @@
 		transition: opacity 0.3s;
 	}
 
-	.preview-button:hover .preview-overlay {
+	.preview-button:not(:disabled):hover .preview-overlay {
 		opacity: 1;
 	}
 
@@ -311,6 +468,7 @@
 		position: relative;
 		border-radius: 0 0 8px 8px;
 		padding-top: 56.25%; /* 16:9 for desktop */
+		overflow: visible; /* Prevents cutting off content */
 	}
 
 	@media (max-width: 768px) {
@@ -347,15 +505,13 @@
 		transition: background-color 0.3s;
 	}
 
-	.close-iframe:hover {
-		background: rgba(0, 0, 0, 0.9);
+	.close-iframe:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
-	article {
-		padding: 25px;
-		min-height: 100vh;
-		background-color: #111111;
-		transition: background-color 0.8s ease-in-out;
+	.close-iframe:not(:disabled):hover {
+		background: rgba(0, 0, 0, 0.9);
 	}
 
 	.description {
@@ -438,6 +594,7 @@
 		text-underline-offset: 0.2em;
 		color: #000;
 		position: fixed;
+		z-index: 2; /* Über andere Elemente */
 	}
 
 	.nav-link:hover {
@@ -465,6 +622,11 @@
 
 	.next-project-link {
 		transition: all 0.3s ease-in-out;
+	}
+
+	.next-project-link[aria-disabled='true'] {
+		pointer-events: none;
+		opacity: 0.7;
 	}
 
 	.next-title {
@@ -522,12 +684,47 @@
 	.media-grid {
 		display: grid;
 		gap: 25px;
+		justify-content: center;
+		max-width: 100%;
+		margin: 0 auto 10rem;
+		grid-template-columns: minmax(0, 1fr); /* Prevent grid items from expanding beyond container */
 	}
 
-	.media-grid img,
-	.media-grid video {
+	.media-grid > :global(*) {
 		width: 100%;
+		display: block;
+	}
+
+	.media-grid :global(img),
+	.media-grid :global(.cld-video-player) {
+		width: 100% !important; /* Force same width */
+		max-width: 100% !important;
 		height: auto;
+		margin: 0 auto;
+		display: block;
+	}
+
+	/* Ensure video fills its container */
+	.media-grid :global(.cld-video-player video) {
+		width: 100%;
+		height: auto !important;
+		max-height: none !important;
+		display: block;
+		object-fit: contain; /* Ensure the entire video is visible */
+	}
+
+	.media-grid :global(.cld-video-player) {
+		margin-bottom: 20px; /* Provide extra space below videos */
+	}
+
+	.media-grid :global(.cld-video-player),
+	.media-grid :global(.cld-video-player > div) {
+		width: 94% !important;
+		max-width: 94% !important;
+		background: transparent !important;
+		min-height: fit-content !important;
+		overflow: visible !important;
+		box-sizing: border-box !important;
 	}
 
 	@media (max-width: 768px) {
@@ -547,10 +744,14 @@
 		text-decoration: none;
 		color: white;
 		width: 100%;
+		text-align: center;
+		display: block;
+		cursor: pointer;
+		padding: 2rem 0;
 	}
 
-	.next-project-link:hover {
-		background-color: #f0f0f0;
+	.next-project-link:hover .next-title {
+		color: #666;
 	}
 
 	.next-label {
