@@ -1,7 +1,8 @@
 type MediaItem = {
     type: 'image' | 'video';
-    url: string;
-    publicId: string;
+    projectId: string;
+    filename: string;
+    hasMobile: boolean,
     alt?: string;
 }
 
@@ -70,3 +71,10 @@ export interface ProjectsData {
 export interface ProjectData {
     project: Project;
 }
+
+export interface ProjectMedia {
+    type: 'image' | 'video';
+    projectId: string;
+    filename: string;
+    alt?: string;
+  }

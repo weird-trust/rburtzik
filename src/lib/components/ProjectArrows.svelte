@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { projects } from '$lib/data/projects';
-	import { CldImage, CldVideoPlayer } from 'svelte-cloudinary';
+
 	import { browser } from '$app/environment';
 	import { animate } from 'motion';
 	import { onMount } from 'svelte';
 	import { isTransitioning } from '$lib/stores/transition';
 	import { goto } from '$app/navigation';
-	import { getImageTransform } from '$lib/utils/cloudinaryTransforms';
+
 	let loaded = false;
 
 	$: if (browser) {
@@ -134,31 +134,28 @@
                     rotateX({-mouseY * 10}deg)"
 					>
 						{#if project.media[0].type === 'image'}
-							<CldImage
-								src={project.media[0].publicId}
-								alt={project.media[0].alt || project.name}
-								{...getImageTransform(project.media[0].publicId)}
-								crop="scale"
-								format="auto"
-								aspectRatio="16:9"
-								quality="auto"
-								fetchFormat="auto"
-								loading="lazy"
-								on:load={() => console.log('Image loaded')}
-								on:error={(e) => console.error('Image error:', e)}
-							/>
+							<picture>
+								<!-- Mobile image -->
+								<source
+									media="(max-width: 767px)"
+									srcset={`/images/${project.media[0].projectId}/mobile/${project.media[0].filename}`}
+								/>
+								<!-- Desktop image (default) -->
+								<img
+									src={`/images/${project.media[0].projectId}/desktop/${project.media[0].filename}`}
+									alt={project.media[0].alt || project.name}
+									loading="lazy"
+								/>
+							</picture>
 						{:else if project.media[0].type === 'video'}
-							<CldVideoPlayer
-								src={project.media[0].publicId}
-								width={960}
-								height={600}
+							<video
+								src={`/images/${project.media[0].projectId}/${project.media[0].filename}`}
+								controls={false}
+								autoplay
 								muted
 								loop
 								playsinline
-								controls={false}
-								on:load={() => console.log('Video loaded')}
-								on:error={(e) => console.error('Video error:', e)}
-							/>
+							></video>
 						{/if}
 					</div>
 				{/if}
