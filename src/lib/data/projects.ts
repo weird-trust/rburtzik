@@ -39,26 +39,43 @@ export const projects: Project[] = [
             ],
             conclusion: 'The dynamic fragments and variable font bring the museum’s artistic essence to the digital realm, offering a flexible and engaging platform for storytelling and exploration.'
         },
-
-    media: [
-        {
-            type: 'image',
-            publicId: 'haus-der-kunst/cksvo4wjhx3jxh0lhrkz',
-            url: `${CLOUDINARY_URL}/f_auto,q_auto/haus-der-kunst/cksvo4wjhx3jxh0lhrkz`,
-            alt: 'haus-der-kunst - Add description'
-        },
-        {
-            type: 'image',
-            publicId: 'haus-der-kunst/znexhlvaukyfub3lw8zf',
-            url: `${CLOUDINARY_URL}/f_auto,q_auto/haus-der-kunst/znexhlvaukyfub3lw8zf`,
-            alt: 'haus-der-kunst - Add description'
-        },
-        {
-            type: 'video',
-            publicId: 'haus-der-kunst/hakvnpefctgjd4dkzhda',
-            url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/haus-der-kunst/hakvnpefctgjd4dkzhda`
-        },
-    ],
+        media: [
+            {
+                type: 'image',
+                projectId: 'haus-der-kunst',
+                filename: 'HDK1.avif',
+                hasMobile: true,
+                alt: 'Haus der Kunst website interface showcasing dynamic fragments'
+            },
+            {
+                type: 'image',
+                projectId: 'haus-der-kunst',
+                filename: 'HDK2.avif',
+                hasMobile: true,
+                alt: 'Haus der Kunst website interface showcasing dynamic fragments'
+            },
+            {
+                type: 'image',
+                projectId: 'haus-der-kunst',
+                hasMobile: false,
+                filename: 'HDK3.avif',
+                alt: 'Haus der Kunst website interface showcasing dynamic fragments'
+            },
+            {
+                type: 'image',
+                projectId: 'haus-der-kunst',
+                filename: 'HDK4.avif',
+                hasMobile: false,
+                alt: 'Haus der Kunst website interface showcasing dynamic fragments'
+            },
+            {
+                type: 'video',
+                projectId: 'haus-der-kunst',
+                filename: 'hdk.mp4',
+                hasMobile: false,
+                alt: 'Variable font demonstration for Haus der Kunst'
+            },
+        ],
     },    
     {
         "id": "hilti",
@@ -96,26 +113,22 @@ export const projects: Project[] = [
             "conclusion": "The resulting configurators streamline the product selection process for construction professionals, combining technical precision with intuitive user experience design."
         },
     
-            media: [
-                {
-                    type: 'image',
-                    publicId: 'hilti/xjqqlgwyfh1t0wkrscn0',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/hilti/xjqqlgwyfh1t0wkrscn0`,
-                    alt: 'hilti - Add description'
-                },
-                {
-                    type: 'image',
-                    publicId: 'hilti/dmq1notqj5xu92eddkty',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/hilti/dmq1notqj5xu92eddkty`,
-                    alt: 'hilti - Add description'
-                },
-                {
-                    type: 'image',
-                    publicId: 'hilti/gtwtycqovnrkkqjforrl',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/hilti/gtwtycqovnrkkqjforrl`,
-                    alt: 'hilti - Add description'
-                },
-            ],
+        media: [
+            {
+                type: 'image',
+                projectId: 'hilti',
+                filename: 'HILTI1.avif',
+                hasMobile: true,
+                alt: 'config'
+            },
+            {
+                type: 'image',
+                projectId: 'hilti',
+                filename: 'HILTI2.avif',
+                hasMobile: true,
+                alt: 'config'
+            }
+        ],
         },
         {
 
@@ -157,57 +170,45 @@ export const projects: Project[] = [
             media: [
                 {
                     type: 'image',
-                    publicId: 'shoah-memorial-frankfurt/jvr7ppql3tunyuknx4jg',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/jvr7ppql3tunyuknx4jg`,
-                    alt: 'shoah-memorial-frankfurt - Add description'
+                    projectId: 'shoah-memorial-frankfurt',
+                    hasMobile: true,
+                    filename: 'shoah1.avif',
+                    alt: 'shoah memormial interface design'
                 },
                 {
                     type: 'image',
-                    publicId: 'shoah-memorial-frankfurt/bxqwzbb9znaymrcwg95z',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/bxqwzbb9znaymrcwg95z`,
-                    alt: 'shoah-memorial-frankfurt - Add description'
+                    projectId: 'shoah-memorial-frankfurt',
+                    hasMobile: true,
+                    filename: 'shoah2.avif',
+                    alt: 'shoah memormial interface design'
                 },
                 {
                     type: 'image',
-                    publicId: 'shoah-memorial-frankfurt/fa3yk4hhdrsqiwhemsqb',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/fa3yk4hhdrsqiwhemsqb`,
-                    alt: 'shoah-memorial-frankfurt - Add description'
+                    projectId: 'shoah-memorial-frankfurt',
+                    hasMobile: true,
+                    filename: 'shoah3.avif',
+                    alt: 'shoah memormial interface design'
                 },
                 {
                     type: 'image',
-                    publicId: 'shoah-memorial-frankfurt/c2xpwixkea0dnig6capw',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/c2xpwixkea0dnig6capw`,
-                    alt: 'shoah-memorial-frankfurt - Add description'
+                    projectId: 'shoah-memorial-frankfurt',
+                    hasMobile: true,
+                    filename: 'shoah4.avif',
+                    alt: 'shoah memormial interface design'
                 },
                 {
                     type: 'image',
-                    publicId: 'shoah-memorial-frankfurt/w7twqrtjt4qnnxinju95',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/w7twqrtjt4qnnxinju95`,
-                    alt: 'shoah-memorial-frankfurt - Add description'
-                },
-                {
-                    type: 'image',
-                    publicId: 'shoah-memorial-frankfurt/gak41rjnocoztgt1wyjh',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/gak41rjnocoztgt1wyjh`,
-                    alt: 'shoah-memorial-frankfurt - Add description'
-                },
-                {
-                    type: 'image',
-                    publicId: 'shoah-memorial-frankfurt/aub9sfsli1oelktmjgpv',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/aub9sfsli1oelktmjgpv`,
-                    alt: 'shoah-memorial-frankfurt - Add description'
-                },
-                {
-                    type: 'image',
-                    publicId: 'shoah-memorial-frankfurt/gprl6qnfas6jdvfu89dy',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/shoah-memorial-frankfurt/gprl6qnfas6jdvfu89dy`,
-                    alt: 'shoah-memorial-frankfurt - Add description'
+                    projectId: 'shoah-memorial-frankfurt',
+                    hasMobile: true,
+                    filename: 'shoah5.avif',
+                    alt: 'shoah memormial interface design'
                 },
                 {
                     type: 'video',
-                    publicId: 'shoah-memorial-frankfurt/hzj799aka8gomfgcwnkz',
-                    url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/shoah-memorial-frankfurt/hzj799aka8gomfgcwnkz`
-            
+                    projectId: 'shoah-memorial-frankfurt',
+                    hasMobile: false,
+                    filename: 'shoah.mp4',
+                    alt: 'interaction on shoah memorial interface'
                 },
             ],
         },
@@ -250,27 +251,31 @@ export const projects: Project[] = [
             media: [
                 {
                     type: 'image',
-                    publicId: 'internet-changed-my-life/sx0zzjtagqfdfzei2x9t',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/internet-changed-my-life/sx0zzjtagqfdfzei2x9t`,
-                    alt: 'internet-changed-my-life - Add description'
+                    projectId: 'internet-changed-my-life',
+                    filename: 'icml1.avif',
+                    hasMobile: true,
+                    alt: 'winamp player interface design'
                 },
                 {
                     type: 'image',
-                    publicId: 'internet-changed-my-life/gn9nbk7ecbthcdic5xis',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/internet-changed-my-life/gn9nbk7ecbthcdic5xis`,
-                    alt: 'internet-changed-my-life - Add description'
+                    projectId: 'internet-changed-my-life',
+                    filename: 'icml2.avif',
+                    hasMobile: true,
+                    alt: 'winamp player interface design'
                 },
                 {
                     type: 'image',
-                    publicId: 'internet-changed-my-life/wavyhoooeqdh8gb1dsmv',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/internet-changed-my-life/wavyhoooeqdh8gb1dsmv`,
-                    alt: 'internet-changed-my-life - Add description'
+                    projectId: 'internet-changed-my-life',
+                    filename: 'icml3.avif',
+                    hasMobile: true,
+                    alt: 'winamp player interface design'
                 },
                 {
                     type: 'video',
-                    publicId: 'internet-changed-my-life/w3ptruezo0macwyok5le',
-                    url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/internet-changed-my-life/w3ptruezo0macwyok5le`
-            
+                    projectId: 'internet-changed-my-life',
+                    filename: 'icml-video.mp4',
+                    hasMobile: false,
+                    alt: 'interaction on winamp player interface'
                 },
             ],
         },
@@ -312,30 +317,40 @@ export const projects: Project[] = [
             media: [
                 {
                     type: 'image',
-                    publicId: 'kampnagel/bfx2boknvzd6o8b5okl9',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/kampnagel/bfx2boknvzd6o8b5okl9`,
-                    alt: 'kampnagel - Add description'
+                    projectId: 'kampnagel',
+                    filename: 'kampnagel1.avif',
+                    hasMobile: true,
+                    alt: 'Theater Kampnagel website interface showcasing dynamic event listings'
                 },
                 {
                     type: 'image',
-                    publicId: 'kampnagel/kmmohhjcyfdbvysae6px',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/kampnagel/kmmohhjcyfdbvysae6px`,
-                    alt: 'kampnagel - Add description'
+                    projectId: 'kampnagel',
+                    filename: 'kampnagel2.avif',
+                    hasMobile: true,
+                    alt: 'Theater Kampnagel website interface showcasing dynamic event listings'
                 },
                 {
                     type: 'image',
-                    publicId: 'kampnagel/jmjbcrjmhfeog024plgx',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/kampnagel/jmjbcrjmhfeog024plgx`,
-                    alt: 'kampnagel - Add description'
+                    projectId: 'kampnagel',
+                    filename: 'kampnagel3.avif',
+                    hasMobile: true,
+                    alt: 'Theater Kampnagel website interface showcasing dynamic event listings'
                 },
                 {
                     type: 'image',
-                    publicId: 'kampnagel/pwy5vaxox3cpnv2lcx4y',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/kampnagel/pwy5vaxox3cpnv2lcx4y`,
-                    alt: 'kampnagel - Add description'
+                    projectId: 'kampnagel',
+                    filename: 'kampnagel4.avif',
+                    hasMobile: true,
+                    alt: 'Theater Kampnagel website interface showcasing dynamic event listings'
+                },
+                {
+                    type: 'video',
+                    projectId: 'kampnagel',
+                    filename: 'Kampnagel.mp4',
+                    hasMobile: false,
+                    alt: 'Theater Kampnagel website interface showcasing dynamic event listings'
                 },
             ],
-            
         },
         {
             "id": "magenta-musik",
@@ -373,38 +388,36 @@ export const projects: Project[] = [
                 "conclusion": "The resulting video player represents a significant advancement in online video consumption, offering users a comprehensive platform for both individual and social viewing experiences."
             }
         ,
-            media: [
-                {
-                    type: 'image',
-                    publicId: 'magenta-musik/lylbvo6piji6e8ubunt0',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/magenta-musik/lylbvo6piji6e8ubunt0`,
-                    alt: 'magenta-musik - Add description'
-                },
-                {
-                    type: 'image',
-                    publicId: 'magenta-musik/r5cdwakavxrddjzfui5r',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/magenta-musik/r5cdwakavxrddjzfui5r`,
-                    alt: 'magenta-musik - Add description'
-                },
-                {
-                    type: 'image',
-                    publicId: 'magenta-musik/vhj1s1x8gin4etzmzsiw',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/magenta-musik/vhj1s1x8gin4etzmzsiw`,
-                    alt: 'magenta-musik - Add description'
-                },
-                {
-                    type: 'image',
-                    publicId: 'magenta-musik/vzbtrudbeaflbg5jbfut',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/magenta-musik/vzbtrudbeaflbg5jbfut`,
-                    alt: 'magenta-musik - Add description'
-                },
-                {
-                    type: 'video',
-                    publicId: 'magenta-musik/nitgjvbovncnhjrhst1m',
-                    url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/magenta-musik/nitgjvbovncnhjrhst1m`
-            
-                },
-            ],
+        media: [
+            {
+                type: 'image',
+                projectId: 'magenta-musik',
+                filename: 'magenta-musik1.avif',
+                hasMobile: true,
+                alt: 'video player interface design'
+            },
+            {
+                type: 'image',
+                projectId: 'magenta-musik',
+                filename: 'magenta-musik2.avif',
+                hasMobile: true,
+                alt: 'video player interface design'
+            },
+            {
+                type: 'image',
+                projectId: 'magenta-musik',
+                filename: 'magenta-musik3.avif',
+                hasMobile: false,
+                alt: 'video player interface design'
+            },
+            {
+                type: 'image',
+                projectId: 'magenta-musik',
+                filename: 'magenta-musik4.avif',
+                hasMobile: false,
+                alt: 'video player interface design'
+            },
+        ],
         },
         {
             "id": "design-hfbk",
@@ -444,83 +457,31 @@ export const projects: Project[] = [
             media: [
                 {
                     type: 'image',
-                    publicId: 'design-hfbk/vxldea9na9rau278amvf',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/vxldea9na9rau278amvf`,
-                    alt: 'design-hfbk - Add description'
+                    projectId: 'design-hfbk',
+                    filename: 'hfbk1.avif',
+                    hasMobile: true,
+                    alt: 'Redesigned HFBK Hamburg Design Department website'
                 },
                 {
                     type: 'image',
-                    publicId: 'design-hfbk/zdolqy5bzbl9hw8wydyp',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/zdolqy5bzbl9hw8wydyp`,
-                    alt: 'design-hfbk - Add description'
+                    projectId: 'design-hfbk',
+                    filename: 'hfbk2.avif',
+                    hasMobile: true,
+                    alt: 'Redesigned HFBK Hamburg Design Department website'
                 },
                 {
                     type: 'image',
-                    publicId: 'design-hfbk/bbji4xqcia9krfxqaoy0',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/bbji4xqcia9krfxqaoy0`,
-                    alt: 'design-hfbk - Add description'
+                    projectId: 'design-hfbk',
+                    filename: 'hfbk3.avif',
+                    hasMobile: false,
+                    alt: 'Redesigned HFBK Hamburg Design Department website'
                 },
                 {
-                    type: 'image',
-                    publicId: 'design-hfbk/sd88ypwugtd7o86gop2o',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/sd88ypwugtd7o86gop2o`,
-                    alt: 'design-hfbk - Add description'
-                },
-                {
-                    type: 'image',
-                    publicId: 'design-hfbk/cw29pqip8zulpat5za7b',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/cw29pqip8zulpat5za7b`,
-                    alt: 'design-hfbk - Add description'
-                },
-                {
-                    type: 'image',
-                    publicId: 'design-hfbk/yv1ptujfbga62lr81slv',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/design-hfbk/yv1ptujfbga62lr81slv`,
-                    alt: 'design-hfbk - Add description'
-                },
-            ],
-        },
-        {
-            "id": "umlaut",
-            "name": "Umlaut Digital Platform",
-            "url": "umlaut.com", // Please provide if available
-            "description": "Innovative interface design for management consultancy",
-            "year": 2018, // Please provide the year
-            "type": "Corporate Platform",
-            "work": "Interface Design Lead",
-            "client": "Umlaut",
-            "credits": {
-                "agency": ["Fork Unstable Media GmbH"],
-                "personal": ["Robert Burtzik"]
-            },
-            "copy": {
-                "intro": "Leading a small team, I directed the interface design for Umlaut's digital platform, implementing their new corporate identity while introducing innovative interaction patterns. The project was completed before Umlaut's acquisition by Accenture.",
-                "sections": [
-                    {
-                        "title": "Identity Integration",
-                        "content": "The interface design seamlessly incorporated Umlaut's new corporate identity while pushing boundaries in digital interaction. We created a distinctive digital presence that reflected the company's innovative approach to consulting.",
-                        "bulletPoints": [
-                            "Integration of new corporate identity elements",
-                            "Development of unique interactive components"
-                        ]
-                    },
-                    {
-                        "title": "Interactive Innovation",
-                        "content": "Our team developed novel interaction patterns that enhanced user engagement while maintaining professional clarity. The design balanced innovative features with intuitive usability, creating a memorable yet efficient user experience.",
-                        "bulletPoints": [
-                            "Custom interaction patterns and animations",
-                            "Responsive design system for multiple devices"
-                        ]
-                    }
-                ],
-                "conclusion": "The platform successfully embodied Umlaut's forward-thinking approach through innovative interface design and interaction patterns, setting new standards for corporate digital presence."
-            },
-            media: [
-                {
-                    type: 'image',
-                    publicId: 'umlaut/e7wttrxi948yupa0tfdi',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/umlaut/e7wttrxi948yupa0tfdi`,
-                    alt: 'umlaut - Add description'
+                    type: 'video',
+                    projectId: 'design-hfbk',
+                    filename: 'hfbk-video.mp4',
+                    hasMobile: false,
+                    alt: 'Redesigned HFBK Hamburg Design Department website'
                 },
             ],
         },
@@ -562,39 +523,45 @@ export const projects: Project[] = [
             media: [
                 {
                     type: 'image',
-                    publicId: 'scamming-interfaces/tjab0jqtf4n3unvbqmvf',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/scamming-interfaces/tjab0jqtf4n3unvbqmvf`,
-                    alt: 'scamming-interfaces - Add description'
+                    projectId: 'scamming-interfaces',
+                    filename: 'scamming-interfaces1.avif',
+                    hasMobile: true,
+                    alt: 'Haus der Kunst website interface showcasing dynamic fragments'
                 },
                 {
                     type: 'image',
-                    publicId: 'scamming-interfaces/skgr1qf3m76ubybl39vk',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/scamming-interfaces/skgr1qf3m76ubybl39vk`,
-                    alt: 'scamming-interfaces - Add description'
+                    projectId: 'scamming-interfaces',
+                    filename: 'scamming-interfaces2.avif',
+                    hasMobile: true,
+                    alt: 'Haus der Kunst website interface showcasing dynamic fragments'
                 },
                 {
                     type: 'image',
-                    publicId: 'scamming-interfaces/cmfywhcjjheubmbgzrkg',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/scamming-interfaces/cmfywhcjjheubmbgzrkg`,
-                    alt: 'scamming-interfaces - Add description'
+                    projectId: 'scamming-interfaces',
+                    filename: 'scamming-interfaces3.avif',
+                    hasMobile: true,
+                    alt: 'Haus der Kunst website interface showcasing dynamic fragments'
                 },
                 {
                     type: 'image',
-                    publicId: 'scamming-interfaces/wo7yecfwakghxzewxzkf',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/scamming-interfaces/wo7yecfwakghxzewxzkf`,
-                    alt: 'scamming-interfaces - Add description'
+                    projectId: 'scamming-interfaces',
+                    filename: 'scamming-interfaces4.avif',
+                    hasMobile: false,
+                    alt: 'Haus der Kunst website interface showcasing dynamic fragments'
                 },
                 {
                     type: 'image',
-                    publicId: 'scamming-interfaces/jjfxk3xssjdy2hqmhdcc',
-                    url: `${CLOUDINARY_URL}/f_auto,q_auto/scamming-interfaces/jjfxk3xssjdy2hqmhdcc`,
-                    alt: 'scamming-interfaces - Add description'
+                    projectId: 'scamming-interfaces',
+                    filename: 'scamming-interfaces5.avif',
+                    hasMobile: false,
+                    alt: 'Haus der Kunst website interface showcasing dynamic fragments'
                 },
                 {
                     type: 'video',
-                    publicId: 'scamming-interfaces/xdqvpob5femud4nidn8i',
-                    url: `${CLOUDINARY_URL_VIDEO}/f_auto:video,q_auto/v1/scamming-interfaces/xdqvpob5femud4nidn8i`
-            
+                    projectId: 'scamming-interfaces',
+                    filename:'scamming-interfaces.mp4',
+                    hasMobile: false,
+                    alt: 'Variable font demonstration for Haus der Kunst'
                 },
             ],
         }

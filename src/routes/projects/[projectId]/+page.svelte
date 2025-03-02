@@ -3,12 +3,9 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { projects } from '$lib/data/projects';
 	import { isTransitioning } from '$lib/stores/transition';
-	import { screenshotConfig } from '$lib/config/screenshot';
 	import ProjectArrowsDetail from '$lib/components/ProjectArrowsDetail.svelte';
 	import { goto } from '$app/navigation';
 	import { afterNavigate } from '$app/navigation';
-	import { CldImage, CldVideoPlayer } from 'svelte-cloudinary';
-	import { getImageTransform, getVideoTransform } from '$lib/utils/cloudinaryTransforms';
 	import { tick } from 'svelte';
 
 	// State
@@ -23,16 +20,12 @@
 	$: ({ project } = data);
 	$: currentIndex = projects.findIndex((p) => p.id === project.id);
 	$: nextProject = projects[(currentIndex + 1) % projects.length];
-	$: screenshotDimension = isMobile
-		? screenshotConfig.dimensions.mobile
-		: screenshotConfig.dimensions.desktop;
 
 	// Animation timing constants
 	const FADE_DURATION = 300; // ms
-	const INITIAL_ANIMATION_DELAY = 100; // ms
+	const INITIAL_ANIMATION_DELAY = 150; // ms
 
 	let isTransitioning_unsubscribe = isTransitioning.subscribe((value) => {
-		// Deaktiviere jegliche Interaktion während des Übergangs
 		if (value && articleElement) {
 			articleElement.style.pointerEvents = 'none';
 		} else if (articleElement) {
@@ -40,13 +33,37 @@
 		}
 	});
 
+	// Funktion zum Überprüfen, ob ein Bild existiert
+	async function imageExists(url: string): Promise<boolean> {
+		try {
+			const response = await fetch(url, { method: 'HEAD' });
+			return response.ok;
+		} catch (error) {
+			return false;
+		}
+	}
+
+	// Funktion, um den korrekten Bildpfad zu erhalten
+	async function getImageSources(item: any) {
+		const desktopPath = `/images/${item.projectId}/desktop/${item.filename}`;
+		const mobilePath = `/images/${item.projectId}/mobile/${item.filename}`;
+
+		// Überprüfe, ob das mobile Bild existiert
+		const hasMobile = await imageExists(mobilePath);
+
+		return {
+			desktop: desktopPath,
+			mobile: hasMobile ? mobilePath : desktopPath
+		};
+	}
+
+	// Speichere die geprüften Bildpfade
+	let imageSourcesMap = new Map();
+
 	async function applyInitialAnimations() {
 		if (!mounted) return;
 
-		await tick(); // Warten auf DOM-Update
-
-		// Use optional chaining and check for element existence
-		// Animate title
+		await tick();
 		const titleEl = document.querySelector('h1');
 		if (titleEl instanceof HTMLElement) {
 			titleEl.style.opacity = '1';
@@ -72,26 +89,35 @@
 	}
 
 	onMount(async () => {
+		if (project.media) {
+			for (const item of project.media) {
+				if (item.type === 'image') {
+					imageSourcesMap.set(item, await getImageSources(item));
+				}
+			}
+		}
+	});
+
+	onMount(() => {
 		mounted = true;
 		updateViewportSize();
 
-		await tick(); // Warten bis DOM bereit ist
+		tick().then(() => {
+			articleElement = document.querySelector('article');
 
-		// Cache article element reference
-		articleElement = document.querySelector('article');
+			// Initial animations mit einem Delay für DOM-Bereitschaft
+			const animationTimer = setTimeout(applyInitialAnimations, INITIAL_ANIMATION_DELAY);
 
-		// Initial animations mit einem Delay für DOM-Bereitschaft
-		const animationTimer = setTimeout(applyInitialAnimations, INITIAL_ANIMATION_DELAY);
+			// Add resize listener
+			window.addEventListener('resize', updateViewportSize);
 
-		// Add resize listener
-		window.addEventListener('resize', updateViewportSize);
-
-		return () => {
-			mounted = false;
-			clearTimeout(animationTimer);
-			window.removeEventListener('resize', updateViewportSize);
-			isTransitioning_unsubscribe();
-		};
+			return () => {
+				mounted = false;
+				clearTimeout(animationTimer);
+				window.removeEventListener('resize', updateViewportSize);
+				isTransitioning_unsubscribe();
+			};
+		});
 	});
 
 	// Neue sichere Methode zum Faden des Artikels
@@ -190,7 +216,6 @@
 </script>
 
 <svelte:head>
-	<!-- Priorisiere kritisches CSS -->
 	<style>
 		article {
 			opacity: 0;
@@ -242,90 +267,32 @@
 		<div class="media-grid">
 			{#each project.media as item}
 				{#if item.type === 'image'}
-					<CldImage
-						src={item.publicId}
-						alt={item.alt || project.name}
-						{...getImageTransform(item.publicId)}
-						crop="scale"
-						format="auto"
-						aspectRatio="16:9"
-						quality="80"
-						fetchFormat="auto"
-						loading="lazy"
-					/>
+					<picture>
+						{#if item.hasMobile}
+							<!-- Mobile image -->
+							<source
+								media="(max-width: 767px)"
+								srcset={`/images/${item.projectId}/mobile/${item.filename}`}
+							/>
+						{/if}
+						<!-- Desktop image (default) -->
+						<img
+							src={`/images/${item.projectId}/desktop/${item.filename}`}
+							alt={item.alt || project.name}
+							loading="lazy"
+						/>
+					</picture>
 				{:else if item.type === 'video'}
-					<CldVideoPlayer
-						src={item.publicId}
-						{...getVideoTransform(item.publicId)}
+					<video
+						src={`/images/${item.projectId}/${item.filename}`}
 						controls={false}
-						autoPlay={true}
+						autoplay
 						muted
 						loop
 						playsinline
-						autoplayMode={'always'}
-					/>
+					></video>
 				{/if}
 			{/each}
-		</div>
-	{:else}
-		<div class="website-preview">
-			{#if !showIframe}
-				<div class="browser-header">
-					<div class="browser-buttons">
-						<span></span>
-						<span></span>
-						<span></span>
-					</div>
-					<div class="browser-address-bar">
-						<span>{project.url}</span>
-					</div>
-				</div>
-				<button
-					class="preview-button"
-					on:click={() => mounted && (showIframe = true)}
-					aria-label="Load website preview"
-					disabled={!mounted || $isTransitioning}
-				>
-					<img
-						src={`https://api.screenshotmachine.com?key=${screenshotConfig.apiKey}&url=${encodeURIComponent(project.url)}&dimension=${screenshotDimension}&device=${isMobile ? 'phone' : 'desktop'}`}
-						alt={`Preview of ${project.name} website`}
-					/>
-					<div class="preview-overlay">
-						<span>Click to load website preview</span>
-					</div>
-				</button>
-			{:else}
-				<div class="browser-header">
-					<div class="browser-buttons">
-						<span></span>
-						<span></span>
-						<span class="close-btn" on:click={() => mounted && (showIframe = false)}></span>
-					</div>
-					<div class="browser-address-bar">
-						<span>{project.url}</span>
-					</div>
-				</div>
-				{#if !$isTransitioning && showIframe && mounted}
-					<div class="iframe-container">
-						<iframe
-							title={project.name}
-							src={project.url}
-							frameborder="0"
-							loading="lazy"
-							style="width: {isMobile ? '390px' : '100%'}; margin: 0 auto;"
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-						></iframe>
-						<button
-							class="close-iframe"
-							on:click={() => mounted && (showIframe = false)}
-							aria-label="Close preview"
-							disabled={!mounted || $isTransitioning}
-						>
-							✕
-						</button>
-					</div>
-				{/if}
-			{/if}
 		</div>
 	{/if}
 
@@ -371,147 +338,6 @@
 		transition:
 			opacity 0.3s ease,
 			background-color 0.8s ease-in-out;
-	}
-
-	/* CSS bleibt größtenteils unverändert */
-	.browser-window {
-		border-radius: 8px;
-		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-		overflow: hidden;
-		background: #fff;
-	}
-
-	.browser-header {
-		background: rgb(39, 52, 39);
-		padding: 12px 16px;
-		display: flex;
-		align-items: center;
-		gap: 16px;
-	}
-
-	.browser-buttons {
-		display: flex;
-		gap: 8px;
-	}
-
-	.browser-buttons span {
-		width: 12px;
-		height: 12px;
-		border-radius: 50%;
-		background: #ff5f56;
-	}
-
-	.browser-buttons span:nth-child(2) {
-		background: #ffbd2e;
-	}
-
-	.browser-buttons span:nth-child(3) {
-		background: #27c93f;
-	}
-
-	.browser-address-bar {
-		flex: 1;
-		background: #fff;
-		border-radius: 4px;
-		padding: 4px 12px;
-		font-size: 13px;
-		color: #666;
-		font-family: var(--font-mono);
-	}
-
-	.website-preview {
-		position: relative;
-		width: 100%;
-		background: #f5f5f5;
-		border-radius: 4px;
-		overflow: hidden;
-	}
-
-	.preview-button {
-		width: 100%;
-		padding: 0;
-		border: none;
-		background: none;
-		cursor: pointer;
-	}
-
-	.preview-button:disabled {
-		cursor: not-allowed;
-	}
-
-	.preview-button img {
-		width: 100%;
-		height: auto;
-		display: block;
-	}
-
-	.preview-overlay {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: rgba(0, 0, 0, 0.5);
-		color: white;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		opacity: 0;
-		transition: opacity 0.3s;
-	}
-
-	.preview-button:not(:disabled):hover .preview-overlay {
-		opacity: 1;
-	}
-
-	.iframe-container {
-		position: relative;
-		border-radius: 0 0 8px 8px;
-		padding-top: 56.25%; /* 16:9 for desktop */
-		overflow: visible; /* Prevents cutting off content */
-	}
-
-	@media (max-width: 768px) {
-		.iframe-container {
-			padding-top: 216.4%; /* Mobile aspect ratio (844/390 = 2.164) */
-			max-width: 390px;
-			margin: 0 auto;
-		}
-	}
-
-	.iframe-container iframe {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		border: none;
-	}
-
-	.close-iframe {
-		position: absolute;
-		top: 1rem;
-		right: 1rem;
-		background: rgba(0, 0, 0, 0.7);
-		color: white;
-		border: none;
-		border-radius: 50%;
-		width: 2rem;
-		height: 2rem;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transition: background-color 0.3s;
-	}
-
-	.close-iframe:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
-	.close-iframe:not(:disabled):hover {
-		background: rgba(0, 0, 0, 0.9);
 	}
 
 	.description {
