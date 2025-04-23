@@ -3,13 +3,11 @@
 	let email: string;
 
 	function decodeEmail(encoded: string): string {
-		return encoded.replace(/[a-zA-Z]/g, function (c) {
-			return String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
-		});
+		return atob(encoded);
 	}
 
 	onMount((): void => {
-		email = decodeEmail('ebore.ghegmvx@tznvy.pbz');
+		email = decodeEmail('cm9iZXJ0LmJ1cnR6aWtAZ21haWwuY29t');
 	});
 </script>
 
