@@ -9,7 +9,7 @@
 	}
 
 	onMount((): void => {
-		email = decodeEmail('eboerg.ohegmvx@tznvy.pbz');
+		email = decodeEmail('ebore.ghegmvx@tznvy.pbz');
 	});
 </script>
 
