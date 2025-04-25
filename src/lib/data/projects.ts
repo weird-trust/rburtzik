@@ -226,7 +226,7 @@ export const projects: Project[] = [
                     "personal": ["Robert Burtzik"]
                 },
                 "copy": {
-                    "intro": "Internet Changed My Life is a nostalgic yet contemporary digital platform that reimagines the iconic Winamp player for the modern web, created as a release hub for musician Simon Apfel's album.",
+                    "intro": "Internet Changed My Life is a nostalgic yet contemporary digital platform that reimagines the iconic Winamp player for the modern web, created as a release hub for musician Simon Apfl's album.",
                     "sections": [
                         {
                             "title": "Retro-Future Interface",
