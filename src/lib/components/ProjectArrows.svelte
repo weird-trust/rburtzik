@@ -4,6 +4,7 @@
 	import { animate } from 'motion';
 	import { onMount } from 'svelte';
 	import { isTransitioning } from '$lib/stores/transition';
+	import { hoverLabel } from '$lib/stores/hover';
 	import { goto } from '$app/navigation';
 
 	const ROWS = 4;
@@ -91,7 +92,13 @@
 	}
 </script>
 
-<div id="projects" class="projects" role="presentation" on:mousemove={handleMouseMove}>
+<div
+	id="projects"
+	class="projects"
+	class:show-override={!!$hoverLabel}
+	role="presentation"
+	on:mousemove={handleMouseMove}
+>
 	{#each projects as project, projectIndex}
 		<section class="project-section" data-project-id={project.id} id={project.id}>
 			<div class="arrow-container">
@@ -102,9 +109,13 @@
 								{arrow}
 								{#if colIndex !== COLS - 1}
 									<div class="hover-content">
-										<span class="project-name">{project.work}</span>
-										<span class="project-type">for {project.credits.agency}</span>
-										<span class="project-desc"> in {project.year}</span>
+										{#if $hoverLabel}
+											<span class="project-name">{$hoverLabel}</span>
+										{:else}
+											<span class="project-name">{project.work}</span>
+											<span class="project-type">for {project.credits.agency}</span>
+											<span class="project-desc"> in {project.year}</span>
+										{/if}
 									</div>
 								{/if}
 							</span>
@@ -290,6 +301,10 @@
 	}
 
 	.project-section:has(.project-title:hover) .arrow:not(.last-column) .hover-content {
+		opacity: 1;
+	}
+
+	.projects.show-override .arrow:not(.last-column) .hover-content {
 		opacity: 1;
 	}
 

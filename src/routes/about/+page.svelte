@@ -6,6 +6,7 @@
 	const COLS = 4;
 	const rows = Array(ROWS).fill(null);
 	const cols = Array(COLS).fill('/');
+	let hoveredContent: string | null = null;
 
 	onMount((): void => {});
 </script>
@@ -18,6 +19,11 @@
 					{#each cols as arrow, colIndex}
 						<span class="arrow" class:last-column={colIndex === COLS - 1}>
 							{arrow}
+							{#if hoveredContent && colIndex !== COLS - 1}
+								<div class="hover-content">
+									<span class="hover-desc">{hoveredContent}</span>
+								</div>
+							{/if}
 						</span>
 					{/each}
 				</div>
@@ -26,7 +32,10 @@
 	</section>
 </main>
 <div class="footer-container">
-	<Footer showImprintDetails />
+	<Footer
+		showImprintDetails
+		on:linkhover={(event) => (hoveredContent = event.detail.content)}
+	/>
 </div>
 <MouseAnimation />
 
@@ -87,9 +96,26 @@
 	.arrow {
 		font-size: 10px;
 		line-height: 1;
+		position: relative;
 	}
 
 	.last-column {
 		text-align: right;
+	}
+
+	.hover-content {
+		position: absolute;
+		font-size: 10px;
+		left: 2rem;
+		top: 50%;
+		width: 20vw;
+		transform: translateY(-50%);
+		pointer-events: none;
+		z-index: 3;
+		background: transparent;
+	}
+
+	.hover-desc {
+		display: block;
 	}
 </style>

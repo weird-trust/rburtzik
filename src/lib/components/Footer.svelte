@@ -1,10 +1,15 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	let email: string;
 	export let showImprintDetails = false;
+	const dispatch = createEventDispatcher();
 
 	function decodeEmail(encoded: string): string {
 		return atob(encoded);
+	}
+
+	function setHover(content: string | null) {
+		dispatch('linkhover', { content });
 	}
 
 	onMount((): void => {
@@ -16,18 +21,55 @@
 	<footer>
 		<p>This place is built with svelte, vite and typescript and is running on vercel.</p>
 		<p>It was last updated on 05/02/2026</p>
-		{#if showImprintDetails}
-			<p class="imprint-text">
-				Fonts used:
-				<a href="https://cursorfont.liebermannkiepereddemann.de/">Cursor-Apple.otf</a>
-				by Liebermann Kiepe Reddemann,
-				<a href="https://commitmono.com/">Commit Mono</a> by Eigil Nikolajsen.
-			</p>
-		{/if}
-		<a href="https://www.are.na/robert-burtzik/channels">Are.na</a>
-		<a href="https://www.instagram.com/rburtzik">Instagram</a>
-		<a href="mailto:{email}">Mail</a>
-		<a href="https://cv.robertburtzik.com">CV</a>
+			{#if showImprintDetails}
+				<p class="imprint-text">
+					Fonts used:
+					<a
+						href="https://cursorfont.liebermannkiepereddemann.de/"
+						on:mouseenter={() => setHover('cursorfont.liebermannkiepereddemann.de')}
+						on:mouseleave={() => setHover(null)}
+					>
+						Cursor-Apple.otf
+					</a>
+					by Liebermann Kiepe Reddemann,
+					<a
+						href="https://commitmono.com/"
+						on:mouseenter={() => setHover('commitmono.com')}
+						on:mouseleave={() => setHover(null)}
+					>
+						Commit Mono
+					</a>
+					by Eigil Nikolajsen.
+				</p>
+			{/if}
+			<a
+				href="https://www.are.na/robert-burtzik/channels"
+				on:mouseenter={() => setHover('are.na/robert-burtzik/channels')}
+				on:mouseleave={() => setHover(null)}
+			>
+				Are.na
+			</a>
+			<a
+				href="https://www.instagram.com/rburtzik"
+				on:mouseenter={() => setHover('instagram.com/rburtzik')}
+				on:mouseleave={() => setHover(null)}
+			>
+				Instagram
+			</a>
+			<a
+				href="mailto:{email}"
+				on:mouseenter={() => setHover(email)}
+				on:mouseleave={() => setHover(null)}
+			>
+				Mail
+			</a>
+			<a
+				href="https://cv.robertburtzik.com"
+				on:mouseenter={() => setHover('cv.robertburtzik.com')}
+				on:mouseleave={() => setHover(null)}
+			>
+				CV
+			</a>
 		<p>© 2026 <a href="/">Robert Burtzik</a>. All rights reserved.</p>
 	</footer>
 </nav>

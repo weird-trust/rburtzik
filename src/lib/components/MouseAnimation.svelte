@@ -9,17 +9,22 @@
 	let p5Instance;
 	let cursorFont;
 	let cursorMode = 'image';
+	let isPaused = false;
+	let clickStep = 0;
 
 	// Anzahl und Verhalten
 	const CURSOR_COUNT = 220; // Anzahl der Cursor
 	const BASE_DELAY_MS = 60; // Basisverzögerung
 	const DELAY_STEP_MS = 10; // zusätzl. Verzögerung pro Cursor (i * step)
-	const EASE = 0.18; // Lerp-Faktor pro Cursor (0..1), kleiner = glatter
+	const EASE = 0.12; // Lerp-Faktor pro Cursor (0..1), kleiner = glatter
 
 	// Noise / Jitter
-	const WANDER_NOISE_SPEED = 0.00015; // langsames Wandern
-	const JITTER_PX = 12; // maximale Jitter-Amplitude in px
-	const JITTER_SPEED = 0.0015; // Jitter-Takt
+	const WANDER_NOISE_SPEED = 0.00025; // langsames Wandern
+	const JITTER_PX = 10; // maximale Jitter-Amplitude in px
+	const JITTER_SPEED = 0.0012; // Jitter-Takt
+	const SHAPE_MODE_MS = 3500; // Wechselintervall der Eigenbewegung
+	const SHAPE_AMPLITUDE = 140; // Größe der Formen
+	const SHAPE_INFLUENCE = 0.65; // Gewichtung der Form im Ziel
 
 	// Follow-Aktivierung
 	const MOVE_SPEED_THRESHOLD = 0.08; // px/ms, ab hier gilt es als "bewegend"
@@ -184,7 +189,7 @@
 			this.vy = 0;
 		}
 
-		update(p, delayedTarget, blend, impulseX, impulseY) {
+		update(p, delayedTarget, blend, impulseX, impulseY, shapeInfluence) {
 			const t = p.millis();
 
 			// Velocity durch Impulse
@@ -199,13 +204,52 @@
 			const wanderX = p.width * p.noise(this.nxSeed, t * WANDER_NOISE_SPEED);
 			const wanderY = p.height * p.noise(t * WANDER_NOISE_SPEED, this.nySeed);
 
-			// Jitter für "nicht super strikt"
-			const jitterX = (p.noise(this.jxSeed, t * JITTER_SPEED) - 0.5) * 2 * JITTER_PX;
-			const jitterY = (p.noise(t * JITTER_SPEED, this.jySeed) - 0.5) * 2 * JITTER_PX;
+		// Jitter für "nicht super strikt"
+		const jitterX = (p.noise(this.jxSeed, t * JITTER_SPEED) - 0.5) * 2 * JITTER_PX;
+		const jitterY = (p.noise(t * JITTER_SPEED, this.jySeed) - 0.5) * 2 * JITTER_PX;
 
-			// Mischung zwischen Noise und verzögertem Mausziel
-			const targetX = p.lerp(wanderX, delayedTarget.x + jitterX, blend);
-			const targetY = p.lerp(wanderY, delayedTarget.y + jitterY, blend);
+		// Eigenleben-Formen: Kreis -> Linie -> Quadrat
+		const shapeMode = Math.floor(t / SHAPE_MODE_MS) % 3;
+		const phase = (t * 0.001 + this.nxSeed) % (Math.PI * 2);
+		let shapeX = 0;
+		let shapeY = 0;
+		if (shapeMode === 0) {
+			shapeX = Math.cos(phase) * SHAPE_AMPLITUDE;
+			shapeY = Math.sin(phase) * SHAPE_AMPLITUDE;
+		} else if (shapeMode === 1) {
+			shapeX = Math.sin(phase) * SHAPE_AMPLITUDE;
+			shapeY = 0;
+		} else {
+			const u = (phase / (Math.PI * 2)) * 4;
+			const seg = Math.floor(u);
+			const f = u - seg;
+			const a = SHAPE_AMPLITUDE;
+			if (seg === 0) {
+				shapeX = -a + f * 2 * a;
+				shapeY = -a;
+			} else if (seg === 1) {
+				shapeX = a;
+				shapeY = -a + f * 2 * a;
+			} else if (seg === 2) {
+				shapeX = a - f * 2 * a;
+				shapeY = a;
+			} else {
+				shapeX = -a;
+				shapeY = a - f * 2 * a;
+			}
+		}
+
+		// Mischung zwischen Noise und verzögertem Mausziel
+		const targetX = p.lerp(
+			p.lerp(wanderX, wanderX + shapeX, shapeInfluence),
+			p.lerp(delayedTarget.x + jitterX, delayedTarget.x + jitterX + shapeX, shapeInfluence),
+			blend
+		);
+		const targetY = p.lerp(
+			p.lerp(wanderY, wanderY + shapeY, shapeInfluence),
+			p.lerp(delayedTarget.y + jitterY, delayedTarget.y + jitterY + shapeY, shapeInfluence),
+			blend
+		);
 
 			// sanftes Nachziehen
 			this.x += (targetX - this.x) * this.ease;
@@ -282,7 +326,28 @@
 			const y = e.clientY;
 			const type = e.shiftKey ? 'attract' : 'repel';
 			addPulse(x, y, type, t);
-			cursorMode = cursorMode === 'image' ? 'font' : 'image';
+			clickStep = (clickStep + 1) % 4;
+
+			if (clickStep === 1) {
+				cursorMode = 'font';
+				isPaused = false;
+			} else if (clickStep === 2) {
+				isPaused = true;
+			} else if (clickStep === 3) {
+				isPaused = false;
+			} else {
+				cursorMode = 'image';
+				isPaused = false;
+			}
+
+			if (p5Instance) {
+				if (isPaused) {
+					p5Instance.noLoop();
+					p5Instance.redraw();
+				} else {
+					p5Instance.loop();
+				}
+			}
 		};
 
 		window.addEventListener('pointermove', onPointerMoveHandler, { passive: true });
@@ -333,6 +398,8 @@
 					p.fill(CURSOR_COLOR);
 				}
 
+				const shapeInfluence = followActive ? 0 : SHAPE_INFLUENCE;
+
 				for (let i = 0; i < cursors.length; i++) {
 					const c = cursors[i];
 					const delayed = getPointerAt(now - c.delayOffsetMs);
@@ -357,7 +424,7 @@
 						}
 					}
 
-					c.update(p, delayed, followBlend, ix, iy);
+					c.update(p, delayed, followBlend, ix, iy, shapeInfluence);
 					c.draw(p, img, cursorFont, cursorMode);
 				}
 			};

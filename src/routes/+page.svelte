@@ -3,6 +3,7 @@
 	import ProjectArrows from '$lib/components/ProjectArrows.svelte';
 	import MouseAnimation from '$lib/components/MouseAnimation.svelte';
 	import { onMount, tick } from 'svelte';
+	import { hoverLabel } from '$lib/stores/hover';
 
 	let onlineTimes = 'Mo - So: 14:00 - 00:00';
 	let status: string = 'offline';
@@ -10,6 +11,7 @@
 	let showSessionTime = false;
 	const sessionStart = Date.now();
 	let sessionTime = '00:00';
+	let hoverTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	let timeObj = { hours: '00', minutes: '00', seconds: '00' };
 
@@ -100,6 +102,16 @@
 			element?.scrollIntoView({ behavior: 'smooth' });
 		}
 	}
+
+	function handleLinkHover(label: string | null) {
+		const nextLabel = label;
+		if (hoverTimeout) clearTimeout(hoverTimeout);
+		if (nextLabel) {
+			hoverLabel.set(nextLabel);
+			return;
+		}
+		hoverTimeout = setTimeout(() => hoverLabel.set(null), 120);
+	}
 </script>
 
 <main
@@ -108,11 +120,13 @@
 	on:mouseenter={handleMouseEnter}
 >
 	<a href="/about" class="nav-link about">Imprint</a>
-	<a href="/" class="nav-link home" class:nav-hidden={!showHomeName}>Robert Burtzik</a>
+	<a href="/" class="nav-link home" class:nav-hidden={!showHomeName || $hoverLabel}>
+		Robert Burtzik
+	</a>
 	<a
 		href="https://cv.robertburtzik.com/"
 		class="nav-link title"
-		class:nav-hidden={!showHomeName}
+		class:nav-hidden={!showHomeName || $hoverLabel}
 		target="_blank"
 		rel="noopener noreferrer"
 	>
@@ -145,15 +159,31 @@
 				<span class="tooltiptext">{onlineTimes}</span>
 			</span>. <br /><br /> He has recently worked on
 
-			<a href="#haus-der-kunst" on:click={(e) => handleClick(e, '#haus-der-kunst')}
+			<a
+				href="#haus-der-kunst"
+				on:mouseenter={() => handleLinkHover('Haus der Kunst München')}
+				on:mouseleave={() => handleLinkHover(null)}
+				on:click={(e) => handleClick(e, '#haus-der-kunst')}
 				>Haus der Kunst München</a
 			>,
-			<a href="#shoah-memorial" on:click={(e) => handleClick(e, '#shoah-memorial-frankfurt')}
+			<a
+				href="#shoah-memorial"
+				on:mouseenter={() => handleLinkHover('Shoah Memorial Frankfurt')}
+				on:mouseleave={() => handleLinkHover(null)}
+				on:click={(e) => handleClick(e, '#shoah-memorial-frankfurt')}
 				>Shoah Memorial Frankfurt</a
 			>,
-			<a href="#kampnagel" on:click={(e) => handleClick(e, '#kampnagel')}>Kampnagel</a>,
+			<a
+				href="#kampnagel"
+				on:mouseenter={() => handleLinkHover('Kampnagel')}
+				on:mouseleave={() => handleLinkHover(null)}
+				on:click={(e) => handleClick(e, '#kampnagel')}
+				>Kampnagel</a
+			>,
 			<a
 				href="#internet-changed-my-life"
+				on:mouseenter={() => handleLinkHover('Internet Changed My Life')}
+				on:mouseleave={() => handleLinkHover(null)}
 				on:click={(e) => handleClick(e, '#internet-changed-my-life')}>internet changed my life</a
 			>.
 		</p>
