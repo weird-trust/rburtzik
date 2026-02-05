@@ -1,12 +1,15 @@
 <script lang="ts">
 	import Footer from '$lib/components/Footer.svelte';
-	import P5 from '$lib/components/p5.svelte';
 	import ProjectArrows from '$lib/components/ProjectArrows.svelte';
 	import MouseAnimation from '$lib/components/MouseAnimation.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 
 	let onlineTimes = 'Mo - So: 14:00 - 00:00';
 	let status: string = 'offline';
+	let showHomeName = true;
+	let showSessionTime = false;
+	const sessionStart = Date.now();
+	let sessionTime = '00:00';
 
 	let timeObj = { hours: '00', minutes: '00', seconds: '00' };
 
@@ -18,13 +21,18 @@
 			seconds: now.getSeconds().toString().padStart(2, '0')
 		};
 
-		if (now.getHours() >= 14 || now.getHours() < 2) {
-			status = 'online';
-		} else {
-			status = 'offline';
-		}
-
 		status = now.getHours() >= 14 || now.getHours() < 2 ? 'online' : 'offline';
+		sessionTime = getSessionTime();
+	}
+
+	function getSessionTime(): string {
+		const elapsedMs = Date.now() - sessionStart;
+		const totalSeconds = Math.floor(elapsedMs / 1000);
+		const minutes = Math.floor(totalSeconds / 60)
+			.toString()
+			.padStart(2, '0');
+		const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+		return `${minutes}:${seconds}`;
 	}
 
 	onMount((): (() => void) => {
@@ -33,10 +41,36 @@
 		return () => clearInterval(interval);
 	});
 
+	onMount((): (() => void) | void => {
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				showHomeName = !entry.isIntersecting;
+			},
+			{ threshold: 0.01, rootMargin: '0px 0px -10% 0px' }
+		);
+
+		let attempts = 0;
+		const maxAttempts = 20;
+		const tryObserve = async () => {
+			await tick();
+			const projectsElement = document.getElementById('projects');
+			if (projectsElement) {
+				observer.observe(projectsElement);
+				return;
+			}
+			if (attempts < maxAttempts) {
+				attempts += 1;
+				requestAnimationFrame(tryObserve);
+			}
+		};
+
+		tryObserve();
+		return () => observer.disconnect();
+	});
+
 	let mouseX = 0;
 	let mouseY = 0;
 	let hoveredLink: HTMLElement | null = null;
-	let hoveredProject: string | null = null;
 
 	function handleMouseMove(event: MouseEvent) {
 		if (!hoveredLink) return;
@@ -49,16 +83,14 @@
 		mouseY = (event.clientY - centerY) / (rect.height / 2);
 	}
 
-	function handleMouseEnter(event: MouseEvent, projectId: string) {
+	function handleMouseEnter(event: MouseEvent) {
 		hoveredLink = event.currentTarget as HTMLElement;
-		hoveredProject = projectId;
 	}
 
 	function handleMouseLeave() {
 		mouseX = 0;
 		mouseY = 0;
 		hoveredLink = null;
-		hoveredProject = null;
 	}
 
 	function handleClick(event: MouseEvent, href: string) {
@@ -73,15 +105,36 @@
 <main
 	on:mousemove={handleMouseMove}
 	on:mouseleave={handleMouseLeave}
-	on:mouseenter={(e) => handleMouseEnter(e, 'home')}
+	on:mouseenter={handleMouseEnter}
 >
 	<a href="/about" class="nav-link about">Imprint</a>
-	<div class="clock nav-link">
-		{timeObj.hours}<span class="blink">:</span>{timeObj.minutes}<span class="blink">:</span
-		>{timeObj.seconds}
+	<a href="/" class="nav-link home" class:nav-hidden={!showHomeName}>Robert Burtzik</a>
+	<a
+		href="https://cv.robertburtzik.com/"
+		class="nav-link title"
+		class:nav-hidden={!showHomeName}
+		target="_blank"
+		rel="noopener noreferrer"
+	>
+		Interface-Designer and Creative Developer
+	</a>
+	<div
+		class="clock nav-link"
+		role="button"
+		tabindex="0"
+		on:click={() => (showSessionTime = !showSessionTime)}
+		on:keydown={(e) => {
+			if (e.key === 'Enter' || e.key === ' ') showSessionTime = !showSessionTime;
+		}}
+	>
+		{#if showSessionTime}
+			{sessionTime}
+		{:else}
+			{timeObj.hours}<span class="blink">:</span>{timeObj.minutes}<span class="blink">:</span
+			>{timeObj.seconds}
+		{/if}
 	</div>
 	<div class="p5-wrapper">
-		<!-- <P5 /> -->
 	</div>
 	<MouseAnimation />
 	<div>
@@ -152,10 +205,10 @@
 	}
 
 	.intro {
-		font-family: Helvetica, sans-serif;
+		font-family: var(--font-display);
 		font-size: 1.5rem;
 		line-height: 1.1;
-		letter-spacing: -0.02em;
+		letter-spacing: var(--tracking-slight);
 		margin-bottom: 2rem;
 		text-align: center;
 	}
@@ -169,7 +222,7 @@
 	.tooltip .tooltiptext {
 		visibility: hidden;
 		width: 120px;
-		background-color: black;
+		background-color: #163e00;
 		color: #fff;
 		text-align: center;
 		font-size: 10px;
@@ -249,7 +302,7 @@
 	.nav-link {
 		font-size: 10px;
 		text-decoration: none;
-		color: #000;
+		color: var(--color-ink);
 		position: fixed;
 	}
 
@@ -259,7 +312,32 @@
 		top: 0.8rem;
 		text-decoration: none;
 		font-size: 10px;
-		color: #111111;
+		color: var(--color-ink);
+	}
+
+	.home {
+		left: 2rem;
+		top: 0.8rem;
+		transition: opacity 0.3s ease;
+	}
+
+	.title {
+		left: 50%;
+		top: 0.8rem;
+		transform: translateX(-50%);
+		text-align: center;
+		white-space: nowrap;
+	}
+
+	@media (max-width: 768px) {
+		.title {
+			display: none;
+		}
+	}
+
+	.nav-hidden {
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	.about {

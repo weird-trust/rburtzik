@@ -2,18 +2,28 @@
 
 :root {
 	--font-mono: 'CommitMono', monospace;
-	--font-pan: 'NextPan', monospace;
 	--font-weight-regular: 400;
 	--font-weight-bold: 700;
+	--font-ui: var(--font-mono);
+	--font-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	--font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	--tracking-tight: -0.06em;
+	--tracking-slight: -0.03em;
+	--tracking-title: -0.02em;
+	--tracking-body: -0.015em;
+	--tracking-wide: 0.1em;
+	--color-ink: #163e00;
 }
 
 body {
-	font-family: var(--font-mono);
+	font-family: var(--font-ui);
 	font-weight: var(--font-weight-regular);
 	font-size: 1rem;
 	line-height: 1rem;
-	background: ghostwhite;
-	color: #111111;
+	font-kerning: normal;
+	font-feature-settings: 'kern' 1, 'liga' 1;
+	background: rgb(216, 215, 215);
+	color: var(--color-ink);
 	margin: 0;
 	padding: 0;
 }

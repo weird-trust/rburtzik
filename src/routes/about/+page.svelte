@@ -26,7 +26,7 @@
 	</section>
 </main>
 <div class="footer-container">
-	<Footer />
+	<Footer showImprintDetails />
 </div>
 <MouseAnimation />
 
@@ -59,7 +59,7 @@
 		left: 0;
 		pointer-events: none;
 		z-index: 1;
-		color: black;
+		color: #163e00;
 	}
 
 	.arrow-container {

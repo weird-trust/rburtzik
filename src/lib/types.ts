@@ -39,42 +39,7 @@ export interface Project {
     };
     media?: MediaItem[];
 }
-export interface Imprint {
-    id: string;
-    name: string;
-    url: string;
-    description: string;
-    year: number;
-    type: string;
-    work: string;
-    client: string;
-    credits: {
-        agency: string[];
-        personal: string[];
-    };
-    copy: {
-        intro: string;
-        sections: {
-            title: string;
-            content: string;
-            bulletPoints?: string[];
-        }[];
-        conclusion: string;
-    };
-    media?: MediaItem[];
-}
-
-export interface ProjectsData {
-    projects: Project[];
-}
-
 export interface ProjectData {
     project: Project;
+    nextProject: Project;
 }
-
-export interface ProjectMedia {
-    type: 'image' | 'video';
-    projectId: string;
-    filename: string;
-    alt?: string;
-  }

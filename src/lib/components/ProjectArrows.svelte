@@ -1,17 +1,10 @@
 <script lang="ts">
 	import { projects } from '$lib/data/projects';
 
-	import { browser } from '$app/environment';
 	import { animate } from 'motion';
 	import { onMount } from 'svelte';
 	import { isTransitioning } from '$lib/stores/transition';
 	import { goto } from '$app/navigation';
-
-	let loaded = false;
-
-	$: if (browser) {
-		loaded = true;
-	}
 
 	const ROWS = 4;
 	const COLS = 4;
@@ -50,6 +43,10 @@
 			document.querySelectorAll('.project-section').forEach((section) => {
 				observer.observe(section);
 			});
+
+			return () => {
+				observer.disconnect();
+			};
 		}
 	});
 
@@ -225,7 +222,7 @@
 		opacity: 0;
 		pointer-events: none;
 		transition: all 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-		mix-blend-mode: difference;
+		mix-blend-mode: exclusion;
 		transform-style: preserve-3d;
 		will-change: transform;
 	}
@@ -261,7 +258,7 @@
 		transform: translate(-50%, -50%);
 		z-index: 2;
 		text-decoration: none;
-		color: inherit;
+		color: #163e00;
 	}
 
 	.project-title:hover ~ .arrow-container .arrow {
@@ -269,10 +266,10 @@
 	}
 
 	h2 {
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: var(--font-display);
 		font-size: clamp(60px, 10vw, 110px);
 		font-weight: 400;
-		letter-spacing: -0.07em;
+		letter-spacing: var(--tracking-tight);
 		line-height: 0.8;
 		width: 90vw;
 		text-align: center;

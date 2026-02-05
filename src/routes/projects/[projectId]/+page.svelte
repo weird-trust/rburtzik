@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { ProjectData } from '$lib/types';
 	import { onMount, onDestroy } from 'svelte';
-	import { projects } from '$lib/data/projects';
 	import { isTransitioning } from '$lib/stores/transition';
 	import ProjectArrowsDetail from '$lib/components/ProjectArrowsDetail.svelte';
 	import { goto } from '$app/navigation';
@@ -9,17 +8,13 @@
 	import { tick } from 'svelte';
 
 	// State
-	let showIframe = false;
-	let isMobile = false;
-	let viewportWidth: number;
 	let mounted = false;
 	let articleElement: HTMLElement | null = null;
+	let safetyTimer: ReturnType<typeof setTimeout> | null = null;
 
 	// Props
 	export let data: ProjectData;
-	$: ({ project } = data);
-	$: currentIndex = projects.findIndex((p) => p.id === project.id);
-	$: nextProject = projects[(currentIndex + 1) % projects.length];
+	$: ({ project, nextProject } = data);
 
 	// Animation timing constants
 	const FADE_DURATION = 300; // ms
@@ -32,33 +27,6 @@
 			articleElement.style.pointerEvents = 'auto';
 		}
 	});
-
-	// Funktion zum Überprüfen, ob ein Bild existiert
-	async function imageExists(url: string): Promise<boolean> {
-		try {
-			const response = await fetch(url, { method: 'HEAD' });
-			return response.ok;
-		} catch (error) {
-			return false;
-		}
-	}
-
-	// Funktion, um den korrekten Bildpfad zu erhalten
-	async function getImageSources(item: any) {
-		const desktopPath = `/images/${item.projectId}/desktop/${item.filename}`;
-		const mobilePath = `/images/${item.projectId}/mobile/${item.filename}`;
-
-		// Überprüfe, ob das mobile Bild existiert
-		const hasMobile = await imageExists(mobilePath);
-
-		return {
-			desktop: desktopPath,
-			mobile: hasMobile ? mobilePath : desktopPath
-		};
-	}
-
-	// Speichere die geprüften Bildpfade
-	let imageSourcesMap = new Map();
 
 	async function applyInitialAnimations() {
 		if (!mounted) return;
@@ -82,25 +50,8 @@
 		});
 	}
 
-	function updateViewportSize() {
-		if (!mounted) return;
-		viewportWidth = window.innerWidth;
-		isMobile = viewportWidth < 768;
-	}
-
-	onMount(async () => {
-		if (project.media) {
-			for (const item of project.media) {
-				if (item.type === 'image') {
-					imageSourcesMap.set(item, await getImageSources(item));
-				}
-			}
-		}
-	});
-
 	onMount(() => {
 		mounted = true;
-		updateViewportSize();
 
 		tick().then(() => {
 			articleElement = document.querySelector('article');
@@ -108,13 +59,9 @@
 			// Initial animations mit einem Delay für DOM-Bereitschaft
 			const animationTimer = setTimeout(applyInitialAnimations, INITIAL_ANIMATION_DELAY);
 
-			// Add resize listener
-			window.addEventListener('resize', updateViewportSize);
-
 			return () => {
 				mounted = false;
 				clearTimeout(animationTimer);
-				window.removeEventListener('resize', updateViewportSize);
 				isTransitioning_unsubscribe();
 			};
 		});
@@ -136,6 +83,20 @@
 		}
 	}
 
+	function startSafetyTimer() {
+		if (safetyTimer) clearTimeout(safetyTimer);
+		safetyTimer = setTimeout(() => {
+			// Falls die Navigation nicht klappt, nach 3 Sekunden zurücksetzen
+			if ($isTransitioning) {
+				console.log('Fallback: Transition-Status zurückgesetzt');
+				isTransitioning.set(false);
+				if (mounted) {
+					safelyFadeArticle('1');
+				}
+			}
+		}, 3000);
+	}
+
 	async function handleNextProject(event: Event) {
 		event.preventDefault();
 		console.log('Click erkannt, Transition-Status:', $isTransitioning, 'Mounted:', mounted);
@@ -144,10 +105,10 @@
 
 		// Set transition state
 		isTransitioning.set(true);
-		showIframe = false;
 
 		// Safely fade out
 		safelyFadeArticle('0');
+		startSafetyTimer();
 
 		// Wait briefly for visual effect then navigate
 		setTimeout(async () => {
@@ -169,28 +130,18 @@
 		}, FADE_DURATION);
 	}
 
-	const safetyTimer = setTimeout(() => {
-		// Falls die Navigation nicht klappt, nach 3 Sekunden zurücksetzen
-		if ($isTransitioning) {
-			console.log('Fallback: Transition-Status zurückgesetzt');
-			isTransitioning.set(false);
-			if (mounted) {
-				safelyFadeArticle('1');
-			}
-		}
-	}, 3000);
-
 	afterNavigate(async () => {
 		if (!mounted) return;
+		if (safetyTimer) {
+			clearTimeout(safetyTimer);
+			safetyTimer = null;
+		}
 
 		// Reset transition state explicitly
 		isTransitioning.set(false);
 
 		// Reset scroll position
 		window.scrollTo({ top: 0, behavior: 'instant' });
-
-		// Reset iframe state
-		showIframe = false;
 
 		await tick(); // Warten auf DOM-Update
 
@@ -212,19 +163,11 @@
 		// Stelle sicher, dass der Übergang-Status beim Verlassen zurückgesetzt wird
 		isTransitioning.set(false);
 		isTransitioning_unsubscribe();
+		if (safetyTimer) {
+			clearTimeout(safetyTimer);
+		}
 	});
 </script>
-
-<svelte:head>
-	<style>
-		article {
-			opacity: 0;
-			transition:
-				opacity 0.3s ease,
-				background-color 0.8s ease-in-out;
-		}
-	</style>
-</svelte:head>
 
 {#if mounted}
 	<ProjectArrowsDetail />
@@ -234,6 +177,7 @@
 	<!-- Header Section -->
 	<header>
 		<a href="/" class="nav-link home">Close Project</a>
+		<a href="/" class="nav-link name">Robert Burtzik</a>
 		<a href="/about" class="nav-link about">Imprint</a>
 	</header>
 
@@ -333,20 +277,20 @@
 	article {
 		padding: 25px;
 		min-height: 100vh;
-		background-color: #111111;
-		opacity: 0; /* Start invisible for transitions */
+		background-color: #09200a;
+		opacity: 1; /* Start visible, fade only on navigation */
 		transition:
 			opacity 0.3s ease,
 			background-color 0.8s ease-in-out;
 	}
 
 	.description {
-		font-family: Arial, Helvetica, sans-serif;
+		font-family: var(--font-body);
 		font-size: 1rem;
-		font-weight: 300;
+		font-weight: 400;
 		line-height: 1.2;
 		text-align: left;
-		letter-spacing: -0.015em;
+		letter-spacing: var(--tracking-body);
 		padding: 10px;
 		display: grid;
 		gap: 2rem;
@@ -387,7 +331,7 @@
 		font-size: 1.5rem;
 		line-height: 1.2;
 		margin-bottom: 0.4rem;
-		letter-spacing: -0.02em;
+		letter-spacing: var(--tracking-title);
 		font-weight: 400;
 		color: white;
 	}
@@ -412,13 +356,15 @@
 		line-height: 1.5;
 		font-family: var(--font-mono);
 		text-align: left;
+		letter-spacing: var(--tracking-wide);
+		text-transform: uppercase;
 	}
 
 	.nav-link {
 		font-size: 10px;
 		text-decoration: underline;
 		text-underline-offset: 0.2em;
-		color: #000;
+		color: var(--color-ink);
 		position: fixed;
 		z-index: 2; /* Über andere Elemente */
 	}
@@ -429,6 +375,11 @@
 
 	.home {
 		left: 2rem;
+		top: 0.8rem;
+		color: white;
+	}
+	.name {
+		right: 2rem;
 		top: 0.8rem;
 		color: white;
 	}
@@ -456,7 +407,6 @@
 	}
 
 	.next-title {
-		/* ...existing styles... */
 		transition:
 			transform 0.6s ease-out,
 			opacity 0.6s ease-out;
@@ -474,10 +424,10 @@
 	}
 
 	h1 {
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: var(--font-display);
 		font-size: clamp(60px, 10vw, 110px);
 		font-weight: 400;
-		letter-spacing: -0.07em;
+		letter-spacing: var(--tracking-tight);
 		line-height: 0.8;
 		margin: 3rem 0 4rem 0;
 		text-align: center;
@@ -577,7 +527,7 @@
 	}
 
 	.next-project-link:hover .next-title {
-		color: #666;
+		color: #163e00;
 	}
 
 	.next-label {
@@ -585,13 +535,14 @@
 		text-transform: uppercase;
 		margin: 0 auto;
 		margin-bottom: 1rem;
+		letter-spacing: var(--tracking-wide);
 	}
 
 	.next-title {
-		font-family: Helvetica, Arial, sans-serif;
+		font-family: var(--font-display);
 		font-size: clamp(60px, 10vw, 110px);
 		font-weight: 400;
-		letter-spacing: -0.07em;
+		letter-spacing: var(--tracking-tight);
 		line-height: 0.8;
 		text-align: center;
 	}

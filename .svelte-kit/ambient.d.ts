@@ -21,7 +21,7 @@
  * 
  * You can override `.env` values from the command line like so:
  * 
- * ```bash
+ * ```sh
  * MY_FEATURE_FLAG="enabled" npm run dev
  * ```
  */
@@ -52,12 +52,13 @@ declare module '$env/static/private' {
 	export const LSCOLORS: string;
 	export const LS_COLORS: string;
 	export const LaunchInstanceID: string;
+	export const MANPATH: string;
 	export const MallocNanoZone: string;
 	export const NVM_BIN: string;
 	export const NVM_CD_FLAGS: string;
 	export const NVM_DIR: string;
 	export const NVM_INC: string;
-	export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
+	export const OSLogRateLimit: string;
 	export const PAGER: string;
 	export const PATH: string;
 	export const PWD: string;
@@ -90,6 +91,7 @@ declare module '$env/static/private' {
 	export const __CFBundleIdentifier: string;
 	export const __CF_USER_TEXT_ENCODING: string;
 	export const VSCODE_L10N_BUNDLE_LOCATION: string;
+	export const APPLICATION_INSIGHTS_NO_STATSBEAT: string;
 	export const ELECTRON_NO_ASAR: string;
 	export const NODE_ENV: string;
 }
@@ -112,14 +114,12 @@ declare module '$env/static/public' {
  * 
  * This module cannot be imported into client-side code.
  * 
- * Dynamic environment variables cannot be used during prerendering.
- * 
  * ```ts
  * import { env } from '$env/dynamic/private';
  * console.log(env.DEPLOYMENT_SPECIFIC_VARIABLE);
  * ```
  * 
- * > In `dev`, `$env/dynamic` always includes environment variables from `.env`. In `prod`, this behavior will depend on your adapter.
+ * > [!NOTE] In `dev`, `$env/dynamic` always includes environment variables from `.env`. In `prod`, this behavior will depend on your adapter.
  */
 declare module '$env/dynamic/private' {
 	export const env: {
@@ -149,12 +149,13 @@ declare module '$env/dynamic/private' {
 		LSCOLORS: string;
 		LS_COLORS: string;
 		LaunchInstanceID: string;
+		MANPATH: string;
 		MallocNanoZone: string;
 		NVM_BIN: string;
 		NVM_CD_FLAGS: string;
 		NVM_DIR: string;
 		NVM_INC: string;
-		ORIGINAL_XDG_CURRENT_DESKTOP: string;
+		OSLogRateLimit: string;
 		PAGER: string;
 		PATH: string;
 		PWD: string;
@@ -187,6 +188,7 @@ declare module '$env/dynamic/private' {
 		__CFBundleIdentifier: string;
 		__CF_USER_TEXT_ENCODING: string;
 		VSCODE_L10N_BUNDLE_LOCATION: string;
+		APPLICATION_INSIGHTS_NO_STATSBEAT: string;
 		ELECTRON_NO_ASAR: string;
 		NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
@@ -198,8 +200,6 @@ declare module '$env/dynamic/private' {
  * Similar to [`$env/dynamic/private`](https://svelte.dev/docs/kit/$env-dynamic-private), but only includes variables that begin with [`config.kit.env.publicPrefix`](https://svelte.dev/docs/kit/configuration#env) (which defaults to `PUBLIC_`), and can therefore safely be exposed to client-side code.
  * 
  * Note that public dynamic environment variables must all be sent from the server to the client, causing larger network requests — when possible, use `$env/static/public` instead.
- * 
- * Dynamic environment variables cannot be used during prerendering.
  * 
  * ```ts
  * import { env } from '$env/dynamic/public';

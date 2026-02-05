@@ -18,7 +18,7 @@ export const load: PageLoad = async ({ params }) => {
         throw error(404, 'Project not found');
     }
 
-    const nextProject = getNextProject(params.projectId);
+    const nextProject = getNextProject(params.projectId) ?? project;
 
     return {
         project,

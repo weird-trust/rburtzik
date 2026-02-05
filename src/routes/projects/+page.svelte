@@ -14,7 +14,7 @@
 		font-size: 10px;
 		text-decoration: underline;
 		text-underline-offset: 0.2em;
-		color: #111111;
+		color: var(--color-ink);
 		position: fixed;
 	}
 

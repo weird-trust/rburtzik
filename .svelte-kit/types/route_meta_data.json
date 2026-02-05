@@ -4,9 +4,7 @@
 	"/demo": [],
 	"/demo/paraglide": [],
 	"/photo": [],
-	"/projects": [
-		"src/routes/projects/+page.ts"
-	],
+	"/projects": [],
 	"/projects/[projectId]": [
 		"src/routes/projects/[projectId]/+page.ts"
 	]

@@ -50,8 +50,8 @@
 <style>
   body {
     background: #fff;
-    color: #000;
-    font-family: "Courier New", Courier, monospace;
+    color: var(--color-ink);
+    font-family: var(--font-ui);
     margin: 0;
     padding: 0;
     line-height: 1.6;
@@ -68,7 +68,7 @@
     display: inline-block;
     margin-right: 20px;
     padding: 10px 20px;
-    background: #000;
+    background: var(--color-ink);
     color: #fff;
     text-transform: uppercase;
     font-weight: bold;
@@ -76,8 +76,8 @@
 
   nav a:hover {
     background: #fff;
-    color: #000;
-    border: 1px solid #000;
+    color: var(--color-ink);
+    border: 1px solid var(--color-ink);
   }
 
   main {
