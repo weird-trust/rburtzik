@@ -16,14 +16,14 @@
 	const CURSOR_COUNT = 220; // Anzahl der Cursor
 	const BASE_DELAY_MS = 60; // Basisverzögerung
 	const DELAY_STEP_MS = 10; // zusätzl. Verzögerung pro Cursor (i * step)
-	const EASE = 0.12; // Lerp-Faktor pro Cursor (0..1), kleiner = glatter
+	const EASE = 0.06; // Lerp-Faktor pro Cursor (0..1), kleiner = glatter
 
 	// Noise / Jitter
 	const WANDER_NOISE_SPEED = 0.00025; // langsames Wandern
 	const JITTER_PX = 10; // maximale Jitter-Amplitude in px
 	const JITTER_SPEED = 0.0012; // Jitter-Takt
 	const SHAPE_MODE_MS = 3500; // Wechselintervall der Eigenbewegung
-	const SHAPE_AMPLITUDE = 140; // Größe der Formen
+	const SHAPE_AMPLITUDE = 110; // Größe der Formen
 	const SHAPE_INFLUENCE = 0.65; // Gewichtung der Form im Ziel
 
 	// Follow-Aktivierung
