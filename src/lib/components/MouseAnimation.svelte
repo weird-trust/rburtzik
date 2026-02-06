@@ -3,15 +3,16 @@
 	import { browser } from '$app/environment';
 
 	let container;
-	let img;
 	let cursors = [];
 	let p5;
 	let p5Instance;
 	let cursorFont;
-	let cursorMode = 'image';
+	let cursorMode = 'single';
 	let isPaused = false;
 	let clickStep = 0;
 	let fontLoading = false;
+	let isSafari = false;
+	const p5Promise = browser ? import('p5') : null;
 
 	// Anzahl und Verhalten
 	const CURSOR_COUNT = 220; // Anzahl der Cursor
@@ -35,6 +36,7 @@
 	const FOLLOW_BLEND_OUT = 0.03; // Ausblend-Geschwindigkeit (0..1)
 
 	const CURSOR_FONT_URL = '/fonts/Cursor-Apple.otf';
+	const CURSOR_GLYPH = 'R';
 	const CURSOR_GLYPHS = [
 		'0',
 		'1',
@@ -179,11 +181,11 @@
 	}
 
 	class Follower {
-		constructor(p, image, i) {
+		constructor(p, i) {
 			this.delayOffsetMs = BASE_DELAY_MS + i * DELAY_STEP_MS;
 			this.ease = EASE * p.random(0.85, 1.15); // minimale Variation
 			this.width = p.random(6, 28);
-			this.height = this.width * (image.height / image.width);
+			this.height = this.width;
 			this.glyph = CURSOR_GLYPHS[i % CURSOR_GLYPHS.length];
 
 			// Seeds für Noise/Jitter
@@ -270,21 +272,20 @@
 			this.vy *= VELOCITY_DAMP;
 		}
 
-		draw(p, image, font, mode) {
-			if (mode === 'font' && font) {
-				p.fill(CURSOR_COLOR);
-				p.textSize(this.width);
-				p.text(this.glyph, this.x, this.y);
-				return;
-			}
-			p.image(image, this.x, this.y, this.width, this.height);
+		draw(p, font, mode) {
+			if (!font) return;
+			p.fill(CURSOR_COLOR);
+			p.textSize(this.width);
+			p.text(mode === 'mix' ? this.glyph : CURSOR_GLYPH, this.x, this.y);
 		}
 	}
 
 	onMount(async () => {
 		if (!browser) return;
 
-		p5 = (await import('p5')).default;
+		isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+		p5 = (await (p5Promise ?? import('p5'))).default;
 
 		// Pointer-Puffer vorbereiten
 		pointerBuffer = new Array(BUFFER_SIZE);
@@ -339,7 +340,7 @@
 			clickStep = (clickStep + 1) % 4;
 
 			if (clickStep === 1) {
-				cursorMode = 'font';
+				cursorMode = 'mix';
 				isPaused = false;
 				if (p5Instance) ensureCursorFont(p5Instance);
 			} else if (clickStep === 2) {
@@ -347,7 +348,7 @@
 			} else if (clickStep === 3) {
 				isPaused = false;
 			} else {
-				cursorMode = 'image';
+				cursorMode = 'single';
 				isPaused = false;
 			}
 
@@ -366,18 +367,18 @@
 
 		const sketch = (p) => {
 			p.preload = () => {
-				// cursor.png klein halten (32–64px) für Performance
-				img = p.loadImage('/cursor.png');
+				cursorFont = p.loadFont(CURSOR_FONT_URL);
 			};
 
 			p.setup = () => {
-				p.pixelDensity(Math.min(window.devicePixelRatio || 1, 2));
+				const pixelCap = isSafari ? 1 : 2;
+				p.pixelDensity(Math.min(window.devicePixelRatio || 1, pixelCap));
 				p.createCanvas(window.innerWidth, window.innerHeight);
 				p.noStroke();
-				p.imageMode(p.CENTER);
 				p.textAlign(p.CENTER, p.CENTER);
 				if (cursorFont) p.textFont(cursorFont);
-				cursors = Array.from({ length: CURSOR_COUNT }, (_, i) => new Follower(p, img, i));
+				const count = isSafari ? Math.round(CURSOR_COUNT * 0.65) : CURSOR_COUNT;
+				cursors = Array.from({ length: count }, (_, i) => new Follower(p, i));
 			};
 
 			p.draw = () => {
@@ -403,10 +404,7 @@
 					s: pulseStrength(now, pulse)
 				}));
 
-				if (cursorMode === 'font' && cursorFont) {
-					p.textFont(cursorFont);
-					p.fill(CURSOR_COLOR);
-				}
+				if (cursorFont) p.textFont(cursorFont);
 
 				const shapeInfluence = followActive ? 0 : SHAPE_INFLUENCE;
 
@@ -435,7 +433,7 @@
 					}
 
 					c.update(p, delayed, followBlend, ix, iy, shapeInfluence);
-					c.draw(p, img, cursorFont, cursorMode);
+					c.draw(p, cursorFont, cursorMode);
 				}
 			};
 
