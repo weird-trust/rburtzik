@@ -236,7 +236,6 @@
 		mix-blend-mode: exclusion;
 		transform-style: preserve-3d;
 		will-change: transform;
-		border-radius: 5px;
 	}
 
 	.hover-media img,
@@ -247,6 +246,7 @@
 		max-height: 100%;
 		object-fit: contain;
 		backface-visibility: hidden;
+		border-radius: 5px;
 	}
 
 	.project-title:hover .hover-media {
