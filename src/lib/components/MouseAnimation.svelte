@@ -371,14 +371,12 @@
 			};
 
 			p.setup = () => {
-				const pixelCap = isSafari ? 1 : 2;
-				p.pixelDensity(Math.min(window.devicePixelRatio || 1, pixelCap));
+				p.pixelDensity(Math.min(window.devicePixelRatio || 1, 2));
 				p.createCanvas(window.innerWidth, window.innerHeight);
 				p.noStroke();
 				p.textAlign(p.CENTER, p.CENTER);
 				if (cursorFont) p.textFont(cursorFont);
-				const count = isSafari ? Math.round(CURSOR_COUNT * 0.65) : CURSOR_COUNT;
-				cursors = Array.from({ length: count }, (_, i) => new Follower(p, i));
+				cursors = Array.from({ length: CURSOR_COUNT }, (_, i) => new Follower(p, i));
 			};
 
 			p.draw = () => {
