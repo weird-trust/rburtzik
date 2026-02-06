@@ -21,7 +21,9 @@ body {
 	font-size: 1rem;
 	line-height: 1rem;
 	font-kerning: normal;
-	font-feature-settings: 'kern' 1, 'liga' 1;
+	font-feature-settings:
+		'kern' 1,
+		'liga' 1;
 	background: rgb(216, 215, 215);
 	color: var(--color-ink);
 	margin: 0;

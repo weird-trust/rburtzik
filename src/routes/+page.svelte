@@ -112,6 +112,11 @@
 		}
 		hoverTimeout = setTimeout(() => hoverLabel.set(null), 120);
 	}
+
+	function clearHoverLabelImmediate() {
+		if (hoverTimeout) clearTimeout(hoverTimeout);
+		hoverLabel.set(null);
+	}
 </script>
 
 <main
@@ -161,29 +166,29 @@
 
 			<a
 				href="#haus-der-kunst"
-				on:mouseenter={() => handleLinkHover('Haus der Kunst München')}
-				on:mouseleave={() => handleLinkHover(null)}
+				on:pointerenter={() => handleLinkHover('Haus der Kunst München')}
+				on:pointerleave={() => handleLinkHover(null)}
 				on:click={(e) => handleClick(e, '#haus-der-kunst')}
 				>Haus der Kunst München</a
 			>,
 			<a
 				href="#shoah-memorial"
-				on:mouseenter={() => handleLinkHover('Shoah Memorial Frankfurt')}
-				on:mouseleave={() => handleLinkHover(null)}
+				on:pointerenter={() => handleLinkHover('Shoah Memorial Frankfurt')}
+				on:pointerleave={() => handleLinkHover(null)}
 				on:click={(e) => handleClick(e, '#shoah-memorial-frankfurt')}
 				>Shoah Memorial Frankfurt</a
 			>,
 			<a
 				href="#kampnagel"
-				on:mouseenter={() => handleLinkHover('Kampnagel')}
-				on:mouseleave={() => handleLinkHover(null)}
+				on:pointerenter={() => handleLinkHover('Kampnagel')}
+				on:pointerleave={() => handleLinkHover(null)}
 				on:click={(e) => handleClick(e, '#kampnagel')}
 				>Kampnagel</a
 			>,
 			<a
 				href="#internet-changed-my-life"
-				on:mouseenter={() => handleLinkHover('Internet Changed My Life')}
-				on:mouseleave={() => handleLinkHover(null)}
+				on:pointerenter={() => handleLinkHover('Internet Changed My Life')}
+				on:pointerleave={() => handleLinkHover(null)}
 				on:click={(e) => handleClick(e, '#internet-changed-my-life')}>internet changed my life</a
 			>.
 		</p>
@@ -197,6 +202,7 @@
 				projectsElement.scrollIntoView({ behavior: 'smooth' });
 			}
 		}}
+		on:pointerenter={clearHoverLabelImmediate}
 	>
 		scroll to projects
 	</button>
@@ -276,14 +282,19 @@
 	.scroll-hint {
 		text-align: center;
 		font-family: var(--font-mono);
+		font-weight: var(--font-weight-regular);
 		font-size: 10px;
 		margin-bottom: 2rem;
+		position: relative;
+		z-index: 5;
+		color: var(--color-ink);
 	}
 
 	button {
 		background: none;
 		border: none;
 		font-family: var(--font-mono);
+		font-weight: var(--font-weight-regular);
 		font-size: 10px;
 	}
 
@@ -292,6 +303,20 @@
 		text-decoration: underline;
 		text-underline-offset: 0.2em;
 		color: blue;
+	}
+
+	@media (hover: none) {
+		.scroll-hint,
+		.scroll-hint:active,
+		.scroll-hint:focus {
+			color: var(--color-ink);
+			text-decoration: none;
+		}
+
+		button:hover {
+			color: var(--color-ink);
+			text-decoration: none;
+		}
 	}
 
 	.status {

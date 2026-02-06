@@ -19,14 +19,51 @@
 	let loadedVideos: Record<string, boolean> = {};
 	let isMobile = false;
 	let isSafari = false;
+	let activeProject = null as (typeof projects)[number] | null;
 	let rafId = 0;
 	let lastMouseEvent: MouseEvent | null = null;
+	let mobileActiveRaf = 0;
+	const projectById = new Map(projects.map((project) => [project.id, project]));
+	const hiddenHoverPositions = new Set(['3:1', '3:2']);
 
 	onMount(() => {
 		isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 		// Check if device is mobile (no hover capability)
 		isMobile = window.matchMedia('(hover: none)').matches;
+		const projectSections = Array.from(
+			document.querySelectorAll<HTMLElement>('.project-section')
+		);
+
+		const updateActiveProjectFromViewport = () => {
+			if (!isMobile) return;
+			const viewportCenter = window.innerHeight / 2;
+			let closestProjectId: string | null = null;
+			let closestDistance = Number.POSITIVE_INFINITY;
+
+			for (const section of projectSections) {
+				const rect = section.getBoundingClientRect();
+				const isVisible = rect.bottom > 0 && rect.top < window.innerHeight;
+				if (!isVisible) continue;
+				const center = rect.top + rect.height / 2;
+				const distance = Math.abs(center - viewportCenter);
+				if (distance < closestDistance) {
+					closestDistance = distance;
+					closestProjectId = section.getAttribute('data-project-id');
+				}
+			}
+
+			activeProject = closestProjectId ? projectById.get(closestProjectId) ?? null : null;
+		};
+
+		const handleMobileScroll = () => {
+			if (!isMobile) return;
+			if (mobileActiveRaf) return;
+			mobileActiveRaf = requestAnimationFrame(() => {
+				updateActiveProjectFromViewport();
+				mobileActiveRaf = 0;
+			});
+		};
 
 		// Set up intersection observers to lazy-load media
 		const observer = new IntersectionObserver(
@@ -42,6 +79,7 @@
 						projectIntersections = { ...projectIntersections };
 					}
 				});
+				handleMobileScroll();
 			},
 			{
 				threshold: 0.25,
@@ -50,12 +88,20 @@
 		);
 
 		// Observe all project sections
-		document.querySelectorAll('.project-section').forEach((section) => {
+		projectSections.forEach((section) => {
 			observer.observe(section);
 		});
 
+		if (isMobile) {
+			updateActiveProjectFromViewport();
+			window.addEventListener('scroll', handleMobileScroll, { passive: true });
+			window.addEventListener('resize', handleMobileScroll);
+		}
+
 		return () => {
 			observer.disconnect();
+			window.removeEventListener('scroll', handleMobileScroll);
+			window.removeEventListener('resize', handleMobileScroll);
 		};
 	});
 
@@ -93,6 +139,21 @@
 		}
 	}
 
+	function handleProjectEnter(project: (typeof projects)[number]) {
+		activeProject = project;
+	}
+
+	function handleProjectLeave() {
+		if (!isMobile) {
+			activeProject = null;
+		}
+	}
+
+	function shouldRenderHoverContent(rowIndex: number, colIndex: number, isIntroHover: boolean) {
+		if (!isIntroHover) return true;
+		return !hiddenHoverPositions.has(`${rowIndex}:${colIndex}`);
+	}
+
 	async function handleProjectClick(projectId: string, e: MouseEvent) {
 		e.preventDefault();
 
@@ -117,38 +178,46 @@
 	id="projects"
 	class="projects"
 	class:show-override={!!$hoverLabel}
+	class:has-project-hover={!!activeProject}
 	class:safari={isSafari}
 	role="presentation"
 	on:mousemove={handleMouseMove}
 >
-	{#each projects as project, projectIndex}
-		<section class="project-section" data-project-id={project.id} id={project.id}>
-			<div class="arrow-container">
-				{#each rows as _, rowIndex}
-					<div class="row">
-						{#each cols as arrow, colIndex}
-							<span class="arrow" class:last-column={colIndex === COLS - 1}>
-								{arrow}
-								{#if colIndex !== COLS - 1}
-									<div class="hover-content">
-										{#if $hoverLabel}
-											<span class="project-name">{$hoverLabel}</span>
-										{:else}
-											<span class="project-name">{project.work}</span>
-											<span class="project-type">for {project.credits.agency}</span>
-											<span class="project-desc"> in {project.year}</span>
-										{/if}
-									</div>
+	<div class="arrow-container">
+		{#each rows as _, rowIndex}
+			<div class="row">
+				{#each cols as arrow, colIndex}
+					<span class="arrow" class:last-column={colIndex === COLS - 1}>
+						{arrow}
+						{#if colIndex !== COLS - 1 && ($hoverLabel || activeProject) && shouldRenderHoverContent(rowIndex, colIndex, !!$hoverLabel)}
+							<div class="hover-content">
+								{#if $hoverLabel}
+									<span class="project-name">{$hoverLabel}</span>
+								{:else if activeProject}
+									{#if isMobile}
+										<span class="project-name">{activeProject.name}</span>
+										<span class="project-desc"> {activeProject.year}</span>
+									{:else}
+										<span class="project-name">{activeProject.work}</span>
+										<span class="project-type">for {activeProject.credits.agency}</span>
+										<span class="project-desc"> in {activeProject.year}</span>
+									{/if}
 								{/if}
-							</span>
-						{/each}
-					</div>
+							</div>
+						{/if}
+					</span>
 				{/each}
 			</div>
+		{/each}
+	</div>
+	{#each projects as project}
+		<section class="project-section" data-project-id={project.id} id={project.id}>
 			<a
 				href={`/projects/${project.id}`}
 				class="project-title"
 				on:click={(e) => handleProjectClick(project.id, e)}
+				on:mouseenter={() => handleProjectEnter(project)}
+				on:mouseleave={handleProjectLeave}
 			>
 				<h2>{project.name}</h2>
 				{#if project.media?.[0]}
@@ -319,24 +388,40 @@
 
 	.hover-content {
 		position: absolute;
+		font-family: var(--font-mono);
+		color: var(--color-ink);
 		font-size: 10px;
-		left: 2rem;
+		font-weight: 300;
+		letter-spacing: normal;
+		line-height: 1;
+		left: 1rem;
 		top: 50%;
 		width: 20vw;
-		transform: translateY(-50%);
-		opacity: 0;
-		transition: opacity 0.3s ease;
+		transform: translateY(-50%) translateX(4px);
+		visibility: hidden;
+		transition:
+			transform 0.3s ease,
+			visibility 0s linear 0.3s;
 		pointer-events: none;
 		z-index: 3;
 		background: transparent;
 	}
 
-	.project-section:has(.project-title:hover) .arrow:not(.last-column) .hover-content {
-		opacity: 1;
+	.hover-desc {
+		display: block;
+		font-weight: 300;
+	}
+
+	.projects.has-project-hover .arrow:not(.last-column) .hover-content {
+		visibility: visible;
+		transform: translateY(-50%) translateX(0);
+		transition-delay: 0s;
 	}
 
 	.projects.show-override .arrow:not(.last-column) .hover-content {
-		opacity: 1;
+		visibility: visible;
+		transform: translateY(-50%) translateX(0);
+		transition-delay: 0s;
 	}
 
 	/* Media query for mobile devices */
@@ -345,8 +430,10 @@
 			opacity: 1;
 		}
 
-		.project-section:has(.visible) .arrow:not(.last-column) .hover-content {
-			opacity: 1;
+		.projects.has-project-hover .arrow:not(.last-column) .hover-content {
+			visibility: visible;
+			transform: translateY(-50%) translateX(0);
+			transition-delay: 0s;
 		}
 
 		.hover-media.visible {

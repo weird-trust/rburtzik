@@ -32,10 +32,7 @@
 	</section>
 </main>
 <div class="footer-container">
-	<Footer
-		showImprintDetails
-		on:linkhover={(event) => (hoveredContent = event.detail.content)}
-	/>
+	<Footer showImprintDetails on:linkhover={(event) => (hoveredContent = event.detail.content)} />
 </div>
 <MouseAnimation />
 
@@ -104,6 +101,7 @@
 	}
 
 	.hover-content {
+		font-family: var(--font-mono);
 		position: absolute;
 		font-size: 10px;
 		left: 2rem;
@@ -117,5 +115,6 @@
 
 	.hover-desc {
 		display: block;
+		font-weight: 300;
 	}
 </style>
