@@ -246,6 +246,7 @@
 		max-height: 100%;
 		object-fit: contain;
 		backface-visibility: hidden;
+		border-radius: 5px;
 	}
 
 	.project-title:hover .hover-media {
