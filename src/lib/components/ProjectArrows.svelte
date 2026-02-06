@@ -16,6 +16,7 @@
 	let mouseY = 0;
 	let hoveredMedia: HTMLElement | null = null;
 	let projectIntersections: Record<string, boolean> = {};
+	let loadedVideos: Record<string, boolean> = {};
 	let isMobile = false;
 	let isSafari = false;
 	let rafId = 0;
@@ -34,6 +35,10 @@
 					const projectId = entry.target.getAttribute('data-project-id');
 					if (projectId) {
 						projectIntersections[projectId] = entry.isIntersecting;
+						if (entry.isIntersecting && !loadedVideos[projectId]) {
+							loadedVideos[projectId] = true;
+							loadedVideos = { ...loadedVideos };
+						}
 						projectIntersections = { ...projectIntersections };
 					}
 				});
@@ -174,7 +179,7 @@
 							</picture>
 						{:else if project.media[0].type === 'video'}
 							<video
-								src={projectIntersections[project.id]
+								src={loadedVideos[project.id]
 									? `/images/${project.media[0].projectId}/${project.media[0].filename}`
 									: ''}
 								controls={false}
@@ -182,7 +187,7 @@
 								muted
 								loop
 								playsinline
-								preload="none"
+								preload="metadata"
 							></video>
 						{/if}
 					</div>
