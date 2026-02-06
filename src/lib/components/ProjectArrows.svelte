@@ -17,8 +17,13 @@
 	let hoveredMedia: HTMLElement | null = null;
 	let projectIntersections: Record<string, boolean> = {};
 	let isMobile = false;
+	let isSafari = false;
+	let rafId = 0;
+	let lastMouseEvent: MouseEvent | null = null;
 
 	onMount(() => {
+		isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 		// Check if device is mobile (no hover capability)
 		isMobile = window.matchMedia('(hover: none)').matches;
 
@@ -53,13 +58,22 @@
 
 	function handleMouseMove(event: MouseEvent) {
 		if (!hoveredMedia) return;
+		lastMouseEvent = event;
+		if (rafId) return;
+		rafId = requestAnimationFrame(() => {
+			if (!hoveredMedia || !lastMouseEvent) {
+				rafId = 0;
+				return;
+			}
 
-		const rect = hoveredMedia.getBoundingClientRect();
-		const centerX = rect.left + rect.width / 2;
-		const centerY = rect.top + rect.height / 2;
+			const rect = hoveredMedia.getBoundingClientRect();
+			const centerX = rect.left + rect.width / 2;
+			const centerY = rect.top + rect.height / 2;
 
-		mouseX = (event.clientX - centerX) / (rect.width / 2);
-		mouseY = (event.clientY - centerY) / (rect.height / 2);
+			mouseX = (lastMouseEvent.clientX - centerX) / (rect.width / 2);
+			mouseY = (lastMouseEvent.clientY - centerY) / (rect.height / 2);
+			rafId = 0;
+		});
 	}
 
 	function handleMouseEnter(event: MouseEvent) {
@@ -70,6 +84,10 @@
 		mouseX = 0;
 		mouseY = 0;
 		hoveredMedia = null;
+		if (rafId) {
+			cancelAnimationFrame(rafId);
+			rafId = 0;
+		}
 	}
 
 	async function handleProjectClick(projectId: string, e: MouseEvent) {
@@ -96,6 +114,7 @@
 	id="projects"
 	class="projects"
 	class:show-override={!!$hoverLabel}
+	class:safari={isSafari}
 	role="presentation"
 	on:mousemove={handleMouseMove}
 >
@@ -232,10 +251,10 @@
 		z-index: 1;
 		opacity: 0;
 		pointer-events: none;
-		transition: all 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+		transition: opacity 0.35s ease;
 		mix-blend-mode: exclusion;
 		transform-style: preserve-3d;
-		will-change: transform;
+		will-change: transform, opacity;
 	}
 
 	.hover-media img,
@@ -258,6 +277,11 @@
 	.hover-media.visible {
 		opacity: 1;
 		pointer-events: auto;
+	}
+
+	/* Safari perf tweaks */
+	.projects.safari .hover-media {
+		mix-blend-mode: normal;
 	}
 
 	.project-title {
@@ -322,7 +346,7 @@
 		.hover-media.visible {
 			max-width: 90vw; /* Make images larger on mobile */
 			max-height: 90vh;
-			transition: all 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+			transition: opacity 0.6s ease;
 		}
 	}
 </style>

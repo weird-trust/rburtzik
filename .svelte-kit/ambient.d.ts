@@ -132,7 +132,6 @@ declare module '$env/static/private' {
 	export const npm_config_init_version: string;
 	export const npm_config_ignore_optional: string;
 	export const SECURITYSESSIONID: string;
-	export const SQLITE_EXEMPT_PATH_FROM_VNODE_GUARDS: string;
 	export const npm_package_scripts_check: string;
 	export const COLORTERM: string;
 	export const npm_node_execpath: string;
@@ -275,7 +274,6 @@ declare module '$env/dynamic/private' {
 		npm_config_init_version: string;
 		npm_config_ignore_optional: string;
 		SECURITYSESSIONID: string;
-		SQLITE_EXEMPT_PATH_FROM_VNODE_GUARDS: string;
 		npm_package_scripts_check: string;
 		COLORTERM: string;
 		npm_node_execpath: string;

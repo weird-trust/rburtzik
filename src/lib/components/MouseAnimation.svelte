@@ -11,6 +11,7 @@
 	let cursorMode = 'image';
 	let isPaused = false;
 	let clickStep = 0;
+	let fontLoading = false;
 
 	// Anzahl und Verhalten
 	const CURSOR_COUNT = 220; // Anzahl der Cursor
@@ -152,6 +153,15 @@
 		pulses.push({ x, y, t0: now, type });
 		// Hard-limit, falls man spamt
 		if (pulses.length > 16) pulses.splice(0, pulses.length - 16);
+	}
+
+	function ensureCursorFont(p) {
+		if (cursorFont || fontLoading) return;
+		fontLoading = true;
+		p.loadFont(CURSOR_FONT_URL, (font) => {
+			cursorFont = font;
+			fontLoading = false;
+		});
 	}
 
 	function pulseRadius(now, pulse) {
@@ -331,6 +341,7 @@
 			if (clickStep === 1) {
 				cursorMode = 'font';
 				isPaused = false;
+				if (p5Instance) ensureCursorFont(p5Instance);
 			} else if (clickStep === 2) {
 				isPaused = true;
 			} else if (clickStep === 3) {
@@ -357,7 +368,6 @@
 			p.preload = () => {
 				// cursor.png klein halten (32–64px) für Performance
 				img = p.loadImage('/cursor.png');
-				cursorFont = p.loadFont(CURSOR_FONT_URL);
 			};
 
 			p.setup = () => {
@@ -366,7 +376,7 @@
 				p.noStroke();
 				p.imageMode(p.CENTER);
 				p.textAlign(p.CENTER, p.CENTER);
-				p.textFont(cursorFont);
+				if (cursorFont) p.textFont(cursorFont);
 				cursors = Array.from({ length: CURSOR_COUNT }, (_, i) => new Follower(p, img, i));
 			};
 
