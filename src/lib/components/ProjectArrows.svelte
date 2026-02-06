@@ -236,6 +236,7 @@
 		mix-blend-mode: exclusion;
 		transform-style: preserve-3d;
 		will-change: transform;
+		border-radius: 5px;
 	}
 
 	.hover-media img,
