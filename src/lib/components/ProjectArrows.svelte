@@ -27,33 +27,31 @@
 		// Check if device is mobile (no hover capability)
 		isMobile = window.matchMedia('(hover: none)').matches;
 
-		// Set up intersection observers for mobile view
-		if (isMobile) {
-			const observer = new IntersectionObserver(
-				(entries) => {
-					entries.forEach((entry) => {
-						const projectId = entry.target.getAttribute('data-project-id');
-						if (projectId) {
-							projectIntersections[projectId] = entry.isIntersecting;
-							projectIntersections = { ...projectIntersections };
-						}
-					});
-				},
-				{
-					threshold: 0.5, // Trigger when 30% visible (earlier appearance)
-					rootMargin: '0px 0px -10% 0px' // Negative bottom margin means it will trigger slightly before element leaves viewport
-				}
-			);
+		// Set up intersection observers to lazy-load media
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					const projectId = entry.target.getAttribute('data-project-id');
+					if (projectId) {
+						projectIntersections[projectId] = entry.isIntersecting;
+						projectIntersections = { ...projectIntersections };
+					}
+				});
+			},
+			{
+				threshold: 0.25,
+				rootMargin: '200px 0px 200px 0px'
+			}
+		);
 
-			// Observe all project sections
-			document.querySelectorAll('.project-section').forEach((section) => {
-				observer.observe(section);
-			});
+		// Observe all project sections
+		document.querySelectorAll('.project-section').forEach((section) => {
+			observer.observe(section);
+		});
 
-			return () => {
-				observer.disconnect();
-			};
-		}
+		return () => {
+			observer.disconnect();
+		};
 	});
 
 	function handleMouseMove(event: MouseEvent) {
@@ -176,12 +174,15 @@
 							</picture>
 						{:else if project.media[0].type === 'video'}
 							<video
-								src={`/images/${project.media[0].projectId}/${project.media[0].filename}`}
+								src={projectIntersections[project.id]
+									? `/images/${project.media[0].projectId}/${project.media[0].filename}`
+									: ''}
 								controls={false}
 								autoplay
 								muted
 								loop
 								playsinline
+								preload="none"
 							></video>
 						{/if}
 					</div>
