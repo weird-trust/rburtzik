@@ -153,8 +153,7 @@
 			>{timeObj.seconds}
 		{/if}
 	</div>
-	<div class="p5-wrapper">
-	</div>
+	<div class="p5-wrapper"></div>
 	<MouseAnimation />
 	<div>
 		<p class="intro">
@@ -168,22 +167,19 @@
 				href="#haus-der-kunst"
 				on:pointerenter={() => handleLinkHover('Haus der Kunst München')}
 				on:pointerleave={() => handleLinkHover(null)}
-				on:click={(e) => handleClick(e, '#haus-der-kunst')}
-				>Haus der Kunst München</a
+				on:click={(e) => handleClick(e, '#haus-der-kunst')}>Haus der Kunst München</a
 			>,
 			<a
 				href="#shoah-memorial"
 				on:pointerenter={() => handleLinkHover('Shoah Memorial Frankfurt')}
 				on:pointerleave={() => handleLinkHover(null)}
-				on:click={(e) => handleClick(e, '#shoah-memorial-frankfurt')}
-				>Shoah Memorial Frankfurt</a
+				on:click={(e) => handleClick(e, '#shoah-memorial-frankfurt')}>Shoah Memorial Frankfurt</a
 			>,
 			<a
 				href="#kampnagel"
 				on:pointerenter={() => handleLinkHover('Kampnagel')}
 				on:pointerleave={() => handleLinkHover(null)}
-				on:click={(e) => handleClick(e, '#kampnagel')}
-				>Kampnagel</a
+				on:click={(e) => handleClick(e, '#kampnagel')}>Kampnagel</a
 			>,
 			<a
 				href="#internet-changed-my-life"
@@ -204,7 +200,7 @@
 		}}
 		on:pointerenter={clearHoverLabelImmediate}
 	>
-		scroll to projects
+		Projects
 	</button>
 </main>
 <ProjectArrows />
@@ -387,6 +383,7 @@
 	@media (max-width: 768px) {
 		.intro {
 			font-size: 1.1rem;
+			margin-bottom: 3rem;
 		}
 
 		.title {

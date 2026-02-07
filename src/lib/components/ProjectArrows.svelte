@@ -28,6 +28,19 @@
 	const hiddenHoverPositions = new Set(['0:0', '0:2', '3:2']);
 	const defaultHoverLabel = 'Robert Burtzik';
 	$: showDefaultName = isMobile && !$hoverLabel && (activeProject || isFooterVisible);
+	const getVideoSrc = (media: {
+		projectId: string;
+		filename: string;
+		hasMobile: boolean;
+		mobileFilename?: string;
+	}) => {
+		if (isMobile && media.hasMobile) {
+			const mobileFilename = media.mobileFilename ?? media.filename;
+			return `/images/${media.projectId}/mobile/${mobileFilename}`;
+		}
+
+		return `/images/${media.projectId}/${media.filename}`;
+	};
 
 	onMount(() => {
 		isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -276,9 +289,7 @@
 							</picture>
 						{:else if project.media[0].type === 'video'}
 							<video
-								src={loadedVideos[project.id]
-									? `/images/${project.media[0].projectId}/${project.media[0].filename}`
-									: ''}
+								src={loadedVideos[project.id] ? getVideoSrc(project.media[0]) : ''}
 								controls={false}
 								autoplay
 								muted

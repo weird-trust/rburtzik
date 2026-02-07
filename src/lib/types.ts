@@ -3,6 +3,7 @@ type MediaItem = {
     projectId: string;
     filename: string;
     hasMobile: boolean,
+    mobileFilename?: string;
     alt?: string;
 }
 

@@ -44,8 +44,9 @@ export const projects: Project[] = [
 			{
 				type: 'video',
 				projectId: 'haus-der-kunst',
+				hasMobile: true,
 				filename: 'hdk.mp4',
-				hasMobile: false,
+				mobileFilename: 'hdk_mobile.mp4',
 				alt: 'Variable font demonstration for Haus der Kunst'
 			},
 			{
@@ -179,8 +180,9 @@ export const projects: Project[] = [
 			{
 				type: 'video',
 				projectId: 'shoah-memorial-frankfurt',
-				hasMobile: false,
+				hasMobile: true,
 				filename: 'shoah.mp4',
+				mobileFilename: 'shoah_mobile.mp4',
 				alt: 'interaction on shoah memorial interface'
 			},
 			{
@@ -264,7 +266,8 @@ export const projects: Project[] = [
 				type: 'video',
 				projectId: 'internet-changed-my-life',
 				filename: 'icml-video.mp4',
-				hasMobile: false,
+				hasMobile: true,
+				mobileFilename: 'icml-video_mobile.mp4',
 				alt: 'interaction on winamp player interface'
 			},
 			{
@@ -335,7 +338,8 @@ export const projects: Project[] = [
 				type: 'video',
 				projectId: 'kampnagel',
 				filename: 'Kampnagel.mp4',
-				hasMobile: false,
+				hasMobile: true,
+				mobileFilename: 'Kamnagel_mobile.mp4',
 				alt: 'Theater Kampnagel website interface showcasing dynamic event listings'
 			},
 			{
