@@ -25,7 +25,6 @@
 	let lastMouseEvent: MouseEvent | null = null;
 	let mobileActiveRaf = 0;
 	let lastScrollY = 0;
-	let mobileTiltRaf = 0;
 	const projectById = new Map(projects.map((project) => [project.id, project]));
 	const hiddenHoverPositions = new Set(['0:0', '0:2', '3:2']);
 	const defaultHoverLabel = 'Robert Burtzik';
@@ -49,35 +48,8 @@
 
 		// Check if device is mobile (no hover capability)
 		isMobile = window.matchMedia('(hover: none)').matches;
-		lastScrollY = window.scrollY;
 		const projectSections = Array.from(document.querySelectorAll<HTMLElement>('.project-section'));
 		const footerEl = document.querySelector<HTMLElement>('[data-site-footer]');
-
-		const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
-
-		const applyMobileTilt = (delta: number) => {
-			if (!isMobile) return;
-			const tilt = clamp(delta / 30, -2.2, 2.2);
-			mouseY = tilt;
-			mouseX = tilt * 0.8;
-			if (mobileTiltRaf) {
-				cancelAnimationFrame(mobileTiltRaf);
-			}
-
-			const decay = () => {
-				mouseX *= 0.92;
-				mouseY *= 0.92;
-				if (Math.abs(mouseX) > 0.01 || Math.abs(mouseY) > 0.01) {
-					mobileTiltRaf = requestAnimationFrame(decay);
-				} else {
-					mouseX = 0;
-					mouseY = 0;
-					mobileTiltRaf = 0;
-				}
-			};
-
-			mobileTiltRaf = requestAnimationFrame(decay);
-		};
 
 		const updateActiveProjectFromViewport = () => {
 			if (!isMobile) return;
@@ -105,12 +77,6 @@
 			if (mobileActiveRaf) return;
 			mobileActiveRaf = requestAnimationFrame(() => {
 				updateActiveProjectFromViewport();
-				const currentScrollY = window.scrollY;
-				const delta = currentScrollY - lastScrollY;
-				lastScrollY = currentScrollY;
-				if (delta !== 0) {
-					applyMobileTilt(delta);
-				}
 				mobileActiveRaf = 0;
 			});
 		};
@@ -165,10 +131,6 @@
 			}
 			window.removeEventListener('scroll', handleMobileScroll);
 			window.removeEventListener('resize', handleMobileScroll);
-			if (mobileTiltRaf) {
-				cancelAnimationFrame(mobileTiltRaf);
-				mobileTiltRaf = 0;
-			}
 		};
 	});
 
