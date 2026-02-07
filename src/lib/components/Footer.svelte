@@ -18,7 +18,7 @@
 </script>
 
 <nav>
-	<footer>
+	<footer data-site-footer>
 		<p>This place is built with svelte, vite and typescript and is running on vercel.</p>
 		<p>It was last updated on 05/02/2026</p>
 			{#if showImprintDetails}

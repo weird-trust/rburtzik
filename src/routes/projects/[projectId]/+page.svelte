@@ -364,13 +364,21 @@
 		font-size: 10px;
 		text-decoration: underline;
 		text-underline-offset: 0.2em;
-		color: var(--color-ink);
+		color: white;
 		position: fixed;
 		z-index: 2; /* Über andere Elemente */
 	}
 
 	.nav-link:hover {
-		color: blue;
+		color: white;
+	}
+
+	.project-info a {
+		color: white;
+	}
+
+	.project-info a:hover {
+		color: white;
 	}
 
 	.home {

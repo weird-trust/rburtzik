@@ -20,20 +20,22 @@
 	let isMobile = false;
 	let isSafari = false;
 	let activeProject = null as (typeof projects)[number] | null;
+	let isFooterVisible = false;
 	let rafId = 0;
 	let lastMouseEvent: MouseEvent | null = null;
 	let mobileActiveRaf = 0;
 	const projectById = new Map(projects.map((project) => [project.id, project]));
-	const hiddenHoverPositions = new Set(['3:1', '3:2']);
+	const hiddenHoverPositions = new Set(['0:0', '0:2', '3:2']);
+	const defaultHoverLabel = 'Robert Burtzik';
+	$: showDefaultName = isMobile && !$hoverLabel && (activeProject || isFooterVisible);
 
 	onMount(() => {
 		isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 		// Check if device is mobile (no hover capability)
 		isMobile = window.matchMedia('(hover: none)').matches;
-		const projectSections = Array.from(
-			document.querySelectorAll<HTMLElement>('.project-section')
-		);
+		const projectSections = Array.from(document.querySelectorAll<HTMLElement>('.project-section'));
+		const footerEl = document.querySelector<HTMLElement>('[data-site-footer]');
 
 		const updateActiveProjectFromViewport = () => {
 			if (!isMobile) return;
@@ -53,7 +55,7 @@
 				}
 			}
 
-			activeProject = closestProjectId ? projectById.get(closestProjectId) ?? null : null;
+			activeProject = closestProjectId ? (projectById.get(closestProjectId) ?? null) : null;
 		};
 
 		const handleMobileScroll = () => {
@@ -87,6 +89,16 @@
 			}
 		);
 
+		const footerObserver = footerEl
+			? new IntersectionObserver(([entry]) => {
+					isFooterVisible = entry.isIntersecting;
+				})
+			: null;
+
+		if (footerObserver && footerEl) {
+			footerObserver.observe(footerEl);
+		}
+
 		// Observe all project sections
 		projectSections.forEach((section) => {
 			observer.observe(section);
@@ -100,6 +112,9 @@
 
 		return () => {
 			observer.disconnect();
+			if (footerObserver) {
+				footerObserver.disconnect();
+			}
 			window.removeEventListener('scroll', handleMobileScroll);
 			window.removeEventListener('resize', handleMobileScroll);
 		};
@@ -149,9 +164,19 @@
 		}
 	}
 
-	function shouldRenderHoverContent(rowIndex: number, colIndex: number, isIntroHover: boolean) {
-		if (!isIntroHover) return true;
-		return !hiddenHoverPositions.has(`${rowIndex}:${colIndex}`);
+	function shouldRenderHoverContent(
+		rowIndex: number,
+		colIndex: number,
+		showDefaultName: boolean,
+		isDefaultCell: boolean
+	) {
+		if (!isMobile) return true;
+		if (showDefaultName && isDefaultCell) return true;
+		if (isFooterVisible && !showDefaultName) return false;
+		if (activeProject || showDefaultName) {
+			return !hiddenHoverPositions.has(`${rowIndex}:${colIndex}`);
+		}
+		return true;
 	}
 
 	async function handleProjectClick(projectId: string, e: MouseEvent) {
@@ -178,6 +203,7 @@
 	id="projects"
 	class="projects"
 	class:show-override={!!$hoverLabel}
+	class:show-default={showDefaultName}
 	class:has-project-hover={!!activeProject}
 	class:safari={isSafari}
 	role="presentation"
@@ -189,10 +215,12 @@
 				{#each cols as arrow, colIndex}
 					<span class="arrow" class:last-column={colIndex === COLS - 1}>
 						{arrow}
-						{#if colIndex !== COLS - 1 && ($hoverLabel || activeProject) && shouldRenderHoverContent(rowIndex, colIndex, !!$hoverLabel)}
+						{#if colIndex !== COLS - 1 && ($hoverLabel || activeProject || showDefaultName) && shouldRenderHoverContent(rowIndex, colIndex, showDefaultName, rowIndex === 0 && colIndex === 0)}
 							<div class="hover-content">
 								{#if $hoverLabel}
 									<span class="project-name">{$hoverLabel}</span>
+								{:else if showDefaultName && rowIndex === 0 && colIndex === 0}
+									<span class="project-name default-name">{defaultHoverLabel}</span>
 								{:else if activeProject}
 									{#if isMobile}
 										<span class="project-name">{activeProject.name}</span>
@@ -397,10 +425,9 @@
 		left: 1rem;
 		top: 50%;
 		width: 20vw;
-		transform: translateY(-50%) translateX(4px);
+		transform: translateY(-50%);
 		visibility: hidden;
 		transition:
-			transform 0.3s ease,
 			visibility 0s linear 0.3s;
 		pointer-events: none;
 		z-index: 3;
@@ -414,13 +441,16 @@
 
 	.projects.has-project-hover .arrow:not(.last-column) .hover-content {
 		visibility: visible;
-		transform: translateY(-50%) translateX(0);
 		transition-delay: 0s;
 	}
 
 	.projects.show-override .arrow:not(.last-column) .hover-content {
 		visibility: visible;
-		transform: translateY(-50%) translateX(0);
+		transition-delay: 0s;
+	}
+
+	.projects.show-default .arrow:not(.last-column) .hover-content {
+		visibility: visible;
 		transition-delay: 0s;
 	}
 
@@ -432,7 +462,11 @@
 
 		.projects.has-project-hover .arrow:not(.last-column) .hover-content {
 			visibility: visible;
-			transform: translateY(-50%) translateX(0);
+			transition-delay: 0s;
+		}
+
+		.projects.show-default .arrow:not(.last-column) .hover-content {
+			visibility: visible;
 			transition-delay: 0s;
 		}
 
@@ -440,6 +474,10 @@
 			max-width: 90vw; /* Make images larger on mobile */
 			max-height: 90vh;
 			transition: opacity 0.6s ease;
+		}
+
+		.default-name {
+			font-size: 9px;
 		}
 	}
 </style>

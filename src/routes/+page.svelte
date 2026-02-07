@@ -385,6 +385,10 @@
 	}
 
 	@media (max-width: 768px) {
+		.intro {
+			font-size: 1.1rem;
+		}
+
 		.title {
 			display: none;
 		}
