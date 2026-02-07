@@ -24,6 +24,8 @@
 	let rafId = 0;
 	let lastMouseEvent: MouseEvent | null = null;
 	let mobileActiveRaf = 0;
+	let lastScrollY = 0;
+	let mobileTiltRaf = 0;
 	const projectById = new Map(projects.map((project) => [project.id, project]));
 	const hiddenHoverPositions = new Set(['0:0', '0:2', '3:2']);
 	const defaultHoverLabel = 'Robert Burtzik';
@@ -47,8 +49,35 @@
 
 		// Check if device is mobile (no hover capability)
 		isMobile = window.matchMedia('(hover: none)').matches;
+		lastScrollY = window.scrollY;
 		const projectSections = Array.from(document.querySelectorAll<HTMLElement>('.project-section'));
 		const footerEl = document.querySelector<HTMLElement>('[data-site-footer]');
+
+		const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+		const applyMobileTilt = (delta: number) => {
+			if (!isMobile) return;
+			const tilt = clamp(delta / 30, -2.2, 2.2);
+			mouseY = tilt;
+			mouseX = tilt * 0.8;
+			if (mobileTiltRaf) {
+				cancelAnimationFrame(mobileTiltRaf);
+			}
+
+			const decay = () => {
+				mouseX *= 0.92;
+				mouseY *= 0.92;
+				if (Math.abs(mouseX) > 0.01 || Math.abs(mouseY) > 0.01) {
+					mobileTiltRaf = requestAnimationFrame(decay);
+				} else {
+					mouseX = 0;
+					mouseY = 0;
+					mobileTiltRaf = 0;
+				}
+			};
+
+			mobileTiltRaf = requestAnimationFrame(decay);
+		};
 
 		const updateActiveProjectFromViewport = () => {
 			if (!isMobile) return;
@@ -76,6 +105,12 @@
 			if (mobileActiveRaf) return;
 			mobileActiveRaf = requestAnimationFrame(() => {
 				updateActiveProjectFromViewport();
+				const currentScrollY = window.scrollY;
+				const delta = currentScrollY - lastScrollY;
+				lastScrollY = currentScrollY;
+				if (delta !== 0) {
+					applyMobileTilt(delta);
+				}
 				mobileActiveRaf = 0;
 			});
 		};
@@ -130,6 +165,10 @@
 			}
 			window.removeEventListener('scroll', handleMobileScroll);
 			window.removeEventListener('resize', handleMobileScroll);
+			if (mobileTiltRaf) {
+				cancelAnimationFrame(mobileTiltRaf);
+				mobileTiltRaf = 0;
+			}
 		};
 	});
 
@@ -219,6 +258,7 @@
 	class:show-default={showDefaultName}
 	class:has-project-hover={!!activeProject}
 	class:safari={isSafari}
+	class:mobile={isMobile}
 	role="presentation"
 	on:mousemove={handleMouseMove}
 >
@@ -358,8 +398,8 @@
 
 	.hover-media {
 		position: fixed;
-		max-width: 80vw;
-		max-height: 80vh;
+		max-width: 92vw;
+		max-height: 92vh;
 		top: 50%;
 		left: 50%;
 		z-index: 1;
@@ -394,7 +434,7 @@
 	}
 
 	/* Safari perf tweaks */
-	.projects.safari .hover-media {
+	.projects.safari:not(.mobile) .hover-media {
 		mix-blend-mode: normal;
 	}
 
@@ -438,8 +478,7 @@
 		width: 20vw;
 		transform: translateY(-50%);
 		visibility: hidden;
-		transition:
-			visibility 0s linear 0.3s;
+		transition: visibility 0s linear 0.3s;
 		pointer-events: none;
 		z-index: 3;
 		background: transparent;
@@ -467,6 +506,18 @@
 
 	/* Media query for mobile devices */
 	@media (hover: none) {
+		.hover-media video {
+			box-shadow: 0 18px 50px rgba(24, 39, 23, 0.25);
+		}
+
+		.project-title h2 {
+			position: relative;
+			z-index: 2;
+			mix-blend-mode: exclusion;
+			opacity: 0;
+			pointer-events: none;
+		}
+
 		.project-section:has(.visible) .arrow {
 			opacity: 1;
 		}
@@ -482,8 +533,8 @@
 		}
 
 		.hover-media.visible {
-			max-width: 90vw; /* Make images larger on mobile */
-			max-height: 90vh;
+			max-width: 98vw; /* Make images larger on mobile */
+			max-height: 98vh;
 			transition: opacity 0.6s ease;
 		}
 

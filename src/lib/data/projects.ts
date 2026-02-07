@@ -556,7 +556,8 @@ export const projects: Project[] = [
 				type: 'video',
 				projectId: 'scamming-interfaces',
 				filename: 'scamming-interfaces.mp4',
-				hasMobile: false,
+				hasMobile: true,
+				mobileFilename: 'scamming_interfaces_mobile.mp4',
 				alt: 'Variable font demonstration for Haus der Kunst'
 			},
 			{
